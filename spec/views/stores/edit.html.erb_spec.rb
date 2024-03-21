@@ -2,9 +2,7 @@ require 'rails_helper'
 
 RSpec.describe "stores/edit", type: :view do
   let(:store) {
-    Store.create!(
-      name: "MyString"
-    )
+    FactoryBot.create(:store)
   }
 
   before(:each) do

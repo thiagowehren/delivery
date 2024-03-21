@@ -9,12 +9,12 @@
 #   end
 
 user = User.find_by(
-    email: "store@example.com"
+    email: "seedStore@example.com"
 )
 
 if !user
     user = User.new(
-        email: "store@example.com",
+        email: "seedStore@example.com",
         password: "123456",
         password_confirmation: "123456"
     )

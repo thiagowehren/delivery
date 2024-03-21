@@ -17,9 +17,19 @@ RSpec.describe "/stores", type: :request do
   # This should return the minimal set of attributes required to create a valid
   # Store. As you add validations to Store, be sure to
   # adjust the attributes here as well.
+  let(:user) {
+    user = User.new(
+      email: "user@example.com", 
+      password: "123456", 
+      password_confirmation: "123456"
+    )
+    user.save!
+    user
+  }
+
   let(:valid_attributes) {
     # skip("Add a hash of attributes valid for your model")
-    {name: "Valid Restaurant Name"}
+    {name: "Valid Restaurant Name", user: user}
   }
 
   let(:invalid_attributes) {
@@ -27,6 +37,10 @@ RSpec.describe "/stores", type: :request do
     {name: ""}
   }
 
+  before {
+    sign_in(user)
+  }
+  
   describe "GET /index" do
     it "renders a successful response" do
       Store.create! valid_attributes
