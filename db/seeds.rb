@@ -8,23 +8,37 @@
 #     MovieGenre.find_or_create_by!(name: genre_name)
 #   end
 
-user = User.find_by(
-    email: "seedStore@example.com"
+admin = User.find_by(
+    email: "adminSeed@example.com"
 )
 
-if !user
-    user = User.new(
-        email: "seedStore@example.com",
+if !admin
+    admin = User.new(
+        email: "adminSeed@example.com",
         password: "123456",
-        password_confirmation: "123456"
+        password_confirmation: "123456",
+        role: :admin
     )
-    user.save!
+    admin.save!
 end
 
-[
-    "Orange Curry",
-    "Belly King"
-].each do |store|
+["Bob Store", "Alice Store"].each do |store|
+    store_email = "#{store.split.map { |s| s.downcase }.join(".")}@example.com"
+
+    user = User.find_by(
+        email: store_email
+    )
+
+    next if user
+
+    user = User.new(
+    email: store_email,
+    password: "123456",
+    password_confirmation: "123456",
+    role: :seller
+    )
+    user.save!
+
     Store.find_or_create_by!(
         name: store, 
         user: user
@@ -38,7 +52,7 @@ end
  "Fish and Chips",
  "Pasta Carbonara"
 ].each do |dish|
-    store = Store.find_by(name:"Orange Curry")
+    store = Store.find_by(name:"Bob Store")
     Product.find_or_create_by!(
         title: dish, store: store
     )
@@ -51,7 +65,7 @@ end
     "Tuna Sashimi",
     "Chicken Milanese"
 ].each do |dish|
-    store = Store.find_by(name:"Belly King")
+    store = Store.find_by(name:"Alice Store")
     Product.find_or_create_by!(
         title: dish, store: store
     )
