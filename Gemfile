@@ -67,3 +67,9 @@ end
 
 gem "devise", "~> 4.9"
 gem "factory_bot_rails"
+
+gem "jwt", "~> 2.8"
+
+gem "devise-jwt", "~> 0.11.0"
+
+gem "rack-cors", "~> 2.0"

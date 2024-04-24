@@ -45,6 +45,24 @@ end
     )
 end
 
+["Bob Buyer", "Alice Buyer"].each do |name|
+    buyer_email = "#{name.split.map { |s| s.downcase }.join(".")}@example.com"
+
+    user = User.find_by(
+        email: buyer_email
+    )
+
+    next if user
+
+    user = User.new(
+    email: buyer_email,
+    password: "123456",
+    password_confirmation: "123456",
+    role: :buyer
+    )
+    user.save!
+end
+
 [
  "Massaman Curry",
  "Risotto with Seafood",
