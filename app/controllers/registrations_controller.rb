@@ -9,7 +9,8 @@ class RegistrationsController < ApplicationController
     end
 
     def sign_in
-        user = User.find_by(email: sign_in_params[:email])
+        role = current_credential.access
+        user = User.where(role: role).find_by(email: sign_in_params[:email])
         if !user || !user.valid_password?(sign_in_params[:password])
             render json: {error: "Invalid email or password. Please make sure you've entered the correct credentials."}, 
             status: :unauthorized
@@ -22,8 +23,14 @@ class RegistrationsController < ApplicationController
 
     def create
         @user = User.new(user_params)
+        @user.role = current_credential.access
+
         token = User.token_for(@user)
-        render json: {"email": @user.email, token: token}, status: :ok if @user.save
+        if @user.save
+            render json: {"email": @user.email, token: token}, status: :ok     
+        else
+            render json: { error: 'invalid credentials' }, status: :unprocessable_entity
+        end
     end
 
     private
@@ -33,7 +40,9 @@ class RegistrationsController < ApplicationController
     end
 
     def user_params
-        params.require(:user).permit(:email, :password, :password_confirmation, :role)
+        params
+            .require(:user)
+            .permit(:email, :password, :password_confirmation)
     end
     
     def not_authorized(e)

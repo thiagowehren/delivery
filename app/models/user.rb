@@ -3,7 +3,9 @@ class User < ApplicationRecord
   # :confirmable, :lockable, :timeoutable, :trackable and :omniauthable
   enum :role, [:admin, :buyer, :seller]
   has_many :stores
-  
+
+  validates :role, presence: true
+
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :validatable
 
@@ -17,7 +19,7 @@ class User < ApplicationRecord
       
       if (user_payload["id"].present?)
         user = User.new
-        user.attributes = user_payload
+        user.attributes = user_payload.except("exp")
       else
         user_email = user_payload["email"]
         user = User.find_by(email: user_email.downcase)
