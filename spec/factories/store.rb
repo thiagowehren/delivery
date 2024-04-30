@@ -1,7 +1,7 @@
 FactoryBot.define do
     factory :store do
         name {"Example Store"}
-        association :user, factory: :user
+        association :user, factory: :seller_user
 
         factory :store_with_products do
             transient do
