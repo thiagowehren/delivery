@@ -5,7 +5,7 @@ class ApplicationController < ActionController::Base
             status: :ok
         else
             #Devise
-            super(current_user)
+            super
         end
     end
     
