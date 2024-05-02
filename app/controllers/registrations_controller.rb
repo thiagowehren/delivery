@@ -5,7 +5,8 @@ class RegistrationsController < ApplicationController
     rescue_from User::InvalidToken, with: :not_authorized
 
     def me
-        current_user()
+        json = current_user()
+        render json: json, status: :ok
     end
 
     def sign_in
@@ -29,7 +30,7 @@ class RegistrationsController < ApplicationController
         if @user.save
             render json: {"email": @user.email, token: token}, status: :ok     
         else
-            render json: { error: 'invalid credentials' }, status: :unprocessable_entity
+            render json: {}, status: :unprocessable_entity
         end
     end
 

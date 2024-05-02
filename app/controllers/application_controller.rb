@@ -1,8 +1,7 @@
 class ApplicationController < ActionController::Base
     def current_user
         if request.format == Mime[:json]
-            render json: {id: @user.id, email: @user.email, role: @user.role},
-            status: :ok
+            {id: @user.id, email: @user.email, role: @user.role}
         else
             #Devise
             super

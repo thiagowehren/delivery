@@ -1,11 +1,11 @@
 class StoresController < ApplicationController
-  # before_action :authenticate_user!
   before_action :authenticate!
   before_action :set_store, only: %i[ show edit update destroy ]
 
   # GET /stores or /stores.json
   def index
-    @stores = Store.all
+    user = current_user()
+    @stores = Store.where(user: user[:id])
   end
 
   # GET /stores/1 or /stores/1.json
