@@ -21,19 +21,6 @@ RSpec.describe "/stores", type: :request do
 
     let(:signed_in) { api_sign_in(user, credential)}
 
-    def api_sign_in(user, credential)
-        post(
-            "/sign_in",
-            headers: {
-                "Accept" => "application/json",
-                "X-API-KEY" => credential.key
-            },
-            params: {
-                login: {email: user.email,password: user.password}
-            }
-        )
-        JSON.parse(response.body)
-    end
 
     describe "GET /show" do
 
