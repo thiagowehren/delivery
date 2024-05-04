@@ -28,7 +28,9 @@ class StoresController < ApplicationController
   # POST /stores or /stores.json
   def create
     @store = Store.new(store_params)
+    if !current_user.admin?
     @store.user = current_user
+    end
 
     respond_to do |format|
       if @store.save
@@ -72,6 +74,11 @@ class StoresController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def store_params
-      params.require(:store).permit(:name)
+        required = params.require(:store)
+      if current_user.admin?
+        required.permit(:name,:user_id)
+      else
+        required.permit(:name)
+      end
     end
 end
