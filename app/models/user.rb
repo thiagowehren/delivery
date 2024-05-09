@@ -3,6 +3,7 @@ class User < ApplicationRecord
   # :confirmable, :lockable, :timeoutable, :trackable and :omniauthable
   enum :role, [:admin, :buyer, :seller]
   has_many :stores
+  has_many :orders, foreign_key: "buyer_id"
 
   validates :role, presence: true
 
