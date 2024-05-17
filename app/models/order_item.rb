@@ -8,8 +8,26 @@ class OrderItem < ApplicationRecord
     private
 
     def store_product
-        if(product.store != order.store)
-            errors.add(:product, "product should belong to `Store`: #{order.store.name} but it's from `Store`: #{product.store.name}")
+        return if product.nil?
+        return if order.nil?
+
+        if (product.store.nil? || order.store.nil?)
+            errors.add(:store, "doens't exist.")
+            return
+        end
+
+        if (amount.present?)
+            if(product.price.nil?)
+                errors.add(:product, "have no set price yet. Therefore is invalid.")
+                return
+            end
+
+            self.price = amount * product.price
+        end
+
+        if (product.store != order.store)
+            errors.add(:product, "should be from `Store`: #{order.store.id},  #{order.store.name} but it's from `Store`: #{product.store.id}, #{product.store.name}")
+            return
         end
     end
 end
