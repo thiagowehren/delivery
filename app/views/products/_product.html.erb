@@ -1,0 +1,9 @@
+<div id="<%= dom_id product %>">
+  <p>
+    <h4>name: <strong><%= product.title %></strong></h4>
+    <% if defined?(show_store_link) %>
+      <p>store: <%= link_to product.store.name, store_path(product.store) %></p>
+    <% end %>
+    <p>price: <%= product.price %></p>
+  </p>
+</div>

@@ -1,0 +1,18 @@
+<p style="color: red"><%= alert %></p>
+
+<h3>Products</h3>
+  
+  <% if current_user.admin? || current_user.eql?(@store.user)%>
+    <p><%= link_to "New Product", new_store_product_path(@store) %></p>
+  <% end %>
+
+  <div>
+    <% (@store.products).each do |product| %>
+      <div>
+        <%= render partial: "products/product", locals: { product: product } %>
+        
+        <p><%= link_to "Show this product", store_product_path(@store, product) %></p>
+      </div>
+      <hr />
+    <% end %>
+  </div>

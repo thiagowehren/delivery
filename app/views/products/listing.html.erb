@@ -2,10 +2,13 @@
 
 <div>
     <% @products.each do |product| %>
-    <div>
-        <h3><%= product.title %></h3>
-        <p>Store: <%= product.store.name %></p>
-    </div>
-    <hr />
+        <div>
+            <%= render partial: "products/product", locals: { product: product, show_store_link: true } %>
+            
+            <% if current_user.admin? || current_user == product.store.user %>
+                <p><%= link_to "Show this product", product %></p>
+            <% end %>
+        </div>
+        <hr />
     <% end %>
 </div>

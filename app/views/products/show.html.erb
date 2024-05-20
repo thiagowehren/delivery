@@ -1,0 +1,12 @@
+<p style="color: green"><%= notice %></p>
+<p style="color: red"><%= alert %></p>
+<h3>Product Details</h3>
+
+<%= render partial: "products/product", locals: { product: @product, show_store_link: true } %>
+
+<div id="<%= dom_id(@product) %>">
+  <% if current_user.admin? || current_user.eql?(@product.store.user)%>
+    <%= link_to "Edit this product", edit_store_product_path(@product) %>
+    <%= button_to "Destroy this product", store_product_path(@product.store, @product), method: :delete %>
+  <% end %>
+</div>

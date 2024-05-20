@@ -1,6 +1,11 @@
 Rails.application.routes.draw do
   devise_for :users
-  resources :stores
+
+  get '/products/:id', to: 'products#redirect_to_store_product'
+
+  resources :stores do
+    resources :products, only: [:index, :show, :edit, :update, :new, :create, :destroy]
+  end
   
   scope :buyers do
     resources :orders, only: [:index, :create, :update, :destroy]

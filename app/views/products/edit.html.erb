@@ -1,0 +1,10 @@
+<p style="color: red"><%= alert %></p>
+
+<h1>Editing Product</h1>
+
+<%= render "form", product: @product, store: @store %>
+<br>
+
+  <%= link_to "Show this product", store_product_path(@store, @product) %> |
+  <%= link_to "Back to stores", stores_path %>
+</div>
