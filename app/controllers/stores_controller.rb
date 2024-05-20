@@ -15,10 +15,18 @@ class StoresController < ApplicationController
 
   # GET /stores/1 or /stores/1.json
   def show
+    return if redirected_seller_cause_not_owner?
+    @store = Store.find(params[:id])
   end
 
   # GET /stores/new
   def new
+    if current_user.buyer?
+      respond_to do |format|
+        format.html { redirect_to stores_url, notice: "Unauthorized" }
+        format.json { head :unauthorized }
+      end
+    end
     @store = Store.new
     if current_user.admin?
       @sellers = User.where(role: :seller)
@@ -28,9 +36,13 @@ class StoresController < ApplicationController
   # GET /stores/1/edit
   def edit
     return if redirected_cause_user_not_owner_and_not_admin?
+    #TODO
+    #edit name
+    #edit image
+    #set to hidden
   end
 
-  # POST /stores or /stores.json
+  # POST /stores
   def create
     @store = Store.new(store_params)
     if !current_user.admin?
@@ -48,7 +60,7 @@ class StoresController < ApplicationController
     end
   end
 
-  # PATCH/PUT /stores/1 or /stores/1.json
+  # PATCH/PUT /stores/1
   def update
     return if redirected_cause_user_not_owner_and_not_admin?
     
@@ -63,11 +75,14 @@ class StoresController < ApplicationController
     end
   end
 
-  # DELETE /stores/1 or /stores/1.json
+  # DELETE /stores/1
   def destroy
     return if redirected_cause_user_not_owner_and_not_admin?
 
-    @store.destroy!
+    ActiveRecord::Base.transaction do
+      @store.products.destroy_all
+      @store.destroy!
+    end
 
     respond_to do |format|
       format.html { redirect_to stores_url, notice: "Store was successfully destroyed." }
@@ -78,7 +93,12 @@ class StoresController < ApplicationController
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_store
-      @store = Store.find(params[:id])
+      @store = Store.find(params[:id]) 
+      rescue ActiveRecord::RecordNotFound
+        respond_to do |format|
+          format.html { render 'stores/store_not_found', status: :not_found }
+          format.json { render 'stores/store_not_found', status: :not_found }
+        end
     end
 
     # Only allow a list of trusted parameters through.
@@ -106,4 +126,21 @@ class StoresController < ApplicationController
       
       redirected_bool
     end
+
+    #pair with early return "return if true" to prevent DoubleRenderError
+    def redirected_seller_cause_not_owner?
+      redirected_bool = false
+
+      if current_user.seller? && (current_user != @store.user)
+        redirected_bool = true
+
+        respond_to do |format|
+          format.html { redirect_to stores_url, alert: "User doesn't match with store Owner" }
+          format.json { render json: {error: "Unauthorized"}, status: :unauthorized  }
+        end
+      end
+      
+      redirected_bool
+    end
+
 end

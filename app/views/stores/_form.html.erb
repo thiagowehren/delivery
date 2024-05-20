@@ -14,7 +14,10 @@
   <div>
     <%= form.label :name, style: "display: block" %>
     <%= form.text_field :name %>
-    
+
+    <%= form.check_box :active %>
+    <%= form.label :active, "hidden" %>
+      
     <% if current_user.admin? && @sellers.present? %>
       <div>
         <%= form.label :seller, style: "display:block" %>

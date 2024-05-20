@@ -1,4 +1,5 @@
 <p style="color: green"><%= notice %></p>
+<p style="color: red"><%= alert %></p>
 
 <%= render @store %>
 
@@ -9,7 +10,19 @@
 
   <%= link_to "Back to stores", stores_path %>
   
-  <% if current_user.admin? %>
+  <% if current_user.admin? || current_user.eql?(@store.user) %>
     <%= button_to "Destroy this store", @store, method: :delete %>
   <% end %>
+
+  <hr />
+  <p>Products</p>
+  
+  <p><%= link_to "Show products", store_products_path(@store) %></p>
+
+  <% if current_user.admin? || current_user.eql?(@store.user)%>
+    <p><%= link_to "New Product", new_store_product_path(@store) %></p>
+  <% end %>
+
+  
+  </div>
 </div>
