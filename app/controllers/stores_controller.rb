@@ -2,6 +2,8 @@ class StoresController < ApplicationController
   skip_forgery_protection only: %i[create update]
   before_action :authenticate!
   before_action :set_store, only: %i[ show edit update destroy ]
+  before_action :redirect_if_not_admin_or_owner, only: [:edit, :update, :destroy]
+  before_action :redirect_if_not_store_owner, only: [:show]
 
   # GET /stores or /stores.json
   def index
@@ -15,7 +17,6 @@ class StoresController < ApplicationController
 
   # GET /stores/1 or /stores/1.json
   def show
-    return if redirected_seller_cause_not_owner?
     @store = Store.find(params[:id])
   end
 
@@ -27,7 +28,9 @@ class StoresController < ApplicationController
         format.json { head :unauthorized }
       end
     end
+
     @store = Store.new
+    
     if current_user.admin?
       @sellers = User.where(role: :seller)
     end
@@ -35,7 +38,6 @@ class StoresController < ApplicationController
 
   # GET /stores/1/edit
   def edit
-    return if redirected_cause_user_not_owner_and_not_admin?
     #TODO
     #edit name
     #edit image
@@ -46,7 +48,7 @@ class StoresController < ApplicationController
   def create
     @store = Store.new(store_params)
     if !current_user.admin?
-    @store.user = current_user
+      @store.user = current_user
     end
 
     respond_to do |format|
@@ -62,7 +64,6 @@ class StoresController < ApplicationController
 
   # PATCH/PUT /stores/1
   def update
-    return if redirected_cause_user_not_owner_and_not_admin?
     
     respond_to do |format|
       if @store.update(store_params)
@@ -77,10 +78,8 @@ class StoresController < ApplicationController
 
   # DELETE /stores/1
   def destroy
-    return if redirected_cause_user_not_owner_and_not_admin?
 
     ActiveRecord::Base.transaction do
-      @store.products.destroy_all
       @store.destroy!
     end
 
@@ -112,35 +111,22 @@ class StoresController < ApplicationController
     end
 
     #pair with early return "return if true" to prevent DoubleRenderError
-    def redirected_cause_user_not_owner_and_not_admin?
-      redirected_bool = false
-
-      if current_user != @store.user && !current_user.admin?
-        redirected_bool = true
-
-        respond_to do |format|
-          format.html { redirect_to stores_url, alert: "User doesn't match with store Owner" }
-          format.json { render json: {error: "Unauthorized"}, status: :unauthorized  }
-        end
+    def redirect_if_not_admin_or_owner
+      return if current_user == @store.user || current_user.admin?
+  
+      respond_to do |format|
+        format.html { redirect_to stores_url, alert: "User doesn't match with store Owner" }
+        format.json { render json: {error: "Unauthorized"}, status: :unauthorized }
       end
-      
-      redirected_bool
     end
 
-    #pair with early return "return if true" to prevent DoubleRenderError
-    def redirected_seller_cause_not_owner?
-      redirected_bool = false
-
-      if current_user.seller? && (current_user != @store.user)
-        redirected_bool = true
-
-        respond_to do |format|
-          format.html { redirect_to stores_url, alert: "User doesn't match with store Owner" }
-          format.json { render json: {error: "Unauthorized"}, status: :unauthorized  }
-        end
+    def redirect_if_not_store_owner
+      return unless current_user.seller? && current_user != @store.user
+  
+      respond_to do |format|
+        format.html { redirect_to stores_url, alert: "User doesn't match with store Owner" }
+        format.json { render json: {error: "Unauthorized"}, status: :unauthorized }
       end
-      
-      redirected_bool
     end
 
 end

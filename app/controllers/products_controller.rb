@@ -3,6 +3,8 @@ class ProductsController < ApplicationController
     before_action :authenticate!
     before_action :set_product, only: %i[ show edit update destroy redirect_to_store_product]
     before_action :set_store, only: %i[ new create show index ]
+		before_action :redirect_if_not_admin_or_owner, only: [:index, :new, :edit, :create, :update, :destroy]
+		before_action :redirect_seller_if_not_store_owner, only: [:show]
 
     def listing
 			if !current_user.admin?
@@ -20,9 +22,6 @@ class ProductsController < ApplicationController
 
 	# GET store/1/products/1 or store/1/products/1.json
 		def show
-			unless current_user.buyer?
-					return if redirected_cause_user_not_owner_and_not_admin?
-			end
 
 			if @product.store_id != @store.id
 				respond_to do |format|
@@ -49,35 +48,31 @@ class ProductsController < ApplicationController
 
   # GET /store/1/products/new
     def new
-				@product = Product.new(store: @store)
-        return if redirected_cause_user_not_owner_and_not_admin?
+		@product = Product.new(store: @store)
     end
 
 	# GET /store/1/products/1.edit
 		def edit
 			@store = @product.store
-			return if redirected_cause_user_not_owner_and_not_admin?
 		end
 
   # POST store/1/products
     def create
-				@product = @store.products.new(product_params)
-        return if redirected_cause_user_not_owner_and_not_admin?
+			@product = @store.products.new(product_params)
 
-        respond_to do |format|
-            if @product.save
-                format.html { redirect_to store_products_path(@store), notice: "Product was successfully created." }
-                format.json { render :show, status: :created, location: @store }
-            else
-                format.html { render :new, status: :unprocessable_entity }
-                format.json { render json: @product.errors, status: :unprocessable_entity }
-            end
-        end
+			respond_to do |format|
+					if @product.save
+							format.html { redirect_to store_products_path(@store), notice: "Product was successfully created." }
+							format.json { render :show, status: :created, location: @store }
+					else
+							format.html { render :new, status: :unprocessable_entity }
+							format.json { render json: @product.errors, status: :unprocessable_entity }
+					end
+			end
     end
 
 	# PATCH/PUT store/1/products/1
 		def update
-			return if redirected_cause_user_not_owner_and_not_admin?
 			#edit image
 			#set to hidden
 
@@ -94,7 +89,6 @@ class ProductsController < ApplicationController
 
 	# DELETE store/1/products/1
 		def destroy
-			return if redirected_cause_user_not_owner_and_not_admin?
 
 			@product.destroy!
 			respond_to do |format|
@@ -139,20 +133,24 @@ class ProductsController < ApplicationController
         end
 		end
 
-    def redirected_cause_user_not_owner_and_not_admin?
-			redirected_bool = false
-
-			if (current_user != @product.store.user) && !current_user.admin?
-				redirected_bool = true
-
-				respond_to do |format|
-					format.html { redirect_to stores_url, alert: "Product or Store it's not yours." }
-					format.json { render json: {error: "Unauthorized"}, status: :unauthorized  }
-				end
+    def redirect_if_not_admin_or_owner
+			return if current_user == @store.user || current_user.admin?
+	
+			respond_to do |format|
+				format.html { redirect_to stores_url, alert: "Product or Store is not yours." }
+				format.json { render json: { error: "Unauthorized" }, status: :unauthorized }
 			end
-			
-			redirected_bool
-    end
+		end
+
+		def redirect_seller_if_not_store_owner
+			return if current_user.buyer? || current_user.admin?
+			return if current_user == @store.user
+	
+			respond_to do |format|
+				format.html { redirect_to stores_url, alert: "Product or Store is not yours." }
+				format.json { render json: { error: "Unauthorized" }, status: :unauthorized }
+			end
+		end
 
     def product_params
         params.require(:product).permit(:title, :price)
