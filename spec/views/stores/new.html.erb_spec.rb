@@ -1,12 +1,20 @@
 require 'rails_helper'
 
 RSpec.describe "stores/new", type: :view do
+  include Devise::Test::ControllerHelpers
+  
+  let(:store){
+    Store.new(name: "MyString")
+  }
+  
+  let(:user) {
+    FactoryBot.create(:seller_user)
+  }
+  
   before(:each) do
-    assign(:store, Store.new(
-      name: "MyString"
-    ))
+    sign_in user
+    assign(:store, store)
   end
-
   it "renders new store form" do
     render
 

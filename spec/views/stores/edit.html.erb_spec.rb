@@ -1,14 +1,17 @@
 require 'rails_helper'
 
 RSpec.describe "stores/edit", type: :view do
+  include Devise::Test::ControllerHelpers
+
   let(:store) {
     FactoryBot.create(:store)
   }
 
   before(:each) do
     assign(:store, store)
+    sign_in store.user
   end
-
+  
   it "renders the edit store form" do
     render
 
