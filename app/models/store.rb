@@ -1,7 +1,9 @@
 class Store < ApplicationRecord
+    acts_as_paranoid
+
     belongs_to :user
     before_validation :ensure_seller
-    has_many :products
+    has_many :products, dependent: :destroy
     validates :name, presence: true, length: {minimum: 3}
 
     private

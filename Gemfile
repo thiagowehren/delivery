@@ -75,3 +75,5 @@ gem "devise-jwt", "~> 0.11.0"
 gem "rack-cors", "~> 2.0"
 
 gem "state_machines-activerecord", "~> 0.9.0"
+
+gem "acts_as_paranoid", "~> 0.10.0"
