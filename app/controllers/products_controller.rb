@@ -53,7 +53,7 @@ class ProductsController < ApplicationController
 
 	# GET /store/1/products/1.edit
 		def edit
-			@store = @product.store
+			# @store = @product.store
 		end
 
   # POST store/1/products
