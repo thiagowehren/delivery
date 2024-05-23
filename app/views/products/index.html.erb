@@ -7,12 +7,16 @@
   <% end %>
 
   <div>
-    <% (@store.products).each do |product| %>
-      <div>
-        <%= render partial: "products/product", locals: { product: product } %>
-        
-        <p><%= link_to "Show this product", store_product_path(@store, product) %></p>
-      </div>
-      <hr />
+    <% if @store.products.any? %>
+      <% (@store.products).each do |product| %>
+        <div>
+          <%= render partial: "products/product", locals: { product: product } %>
+          
+          <p><%= link_to "Show this product", store_product_path(@store, product) %></p>
+        </div>
+        <hr />
+      <% end %>
+    <% else %>
+      <p>Empty</p>
     <% end %>
   </div>
