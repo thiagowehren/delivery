@@ -6,7 +6,7 @@
             <%= render partial: "products/product", locals: { product: product, show_store_link: true } %>
             
             <% if current_user.admin? || current_user == product.store.user %>
-                <p><%= link_to "Show this product", product %></p>
+                <p><%= link_to "Show this product", store_product_path(product.store, product) %></p>
             <% end %>
         </div>
         <hr />
