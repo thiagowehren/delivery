@@ -1,9 +1,11 @@
 class ProductsController < ApplicationController
-    # before_action :authenticate_user!
-    before_action :authenticate!
-    before_action :set_product, only: %i[ show edit update destroy redirect_to_store_product]
-    before_action :set_store, only: %i[ new create show index ]
+	skip_forgery_protection only: %i[create update]
 
+	before_action :authenticate!
+  
+	before_action :set_store, except: %i[listing redirect_to_store_product]
+	before_action :set_product, only: %i[show edit update destroy redirect_to_store_product]
+  
 	before_action :authorize_admin, only: %i[listing]
 	before_action :authorize_store_owner_and_admin, only: %i[create new edit update destroy]
 	before_action :authorize_buyer_store_owner_and_admin, only: %i[show index]
@@ -17,7 +19,7 @@ class ProductsController < ApplicationController
 	def show
 		if @product.store_id != @store.id
 			respond_to do |format|
-				format.html { redirect_to store_path(params[:store_id]), alert: "Product is not from this store." }
+				format.html { redirect_to store_products_path(@store), alert: "Product is not from this store." }
 				format.json { render json: { error: { message: "Product is not from this store." }}, status: :unprocessable_entity }
 			end
 			return
@@ -54,7 +56,7 @@ class ProductsController < ApplicationController
 		respond_to do |format|
 			if @product.save
 				format.html { redirect_to store_products_path(@store), notice: "Product was successfully created." }
-				format.json { render :show, status: :created, location: @store }
+				format.json { render :show, status: :created, location: store_product_url(@store, @product) }
 			else
 				format.html { render :new, status: :unprocessable_entity }
 				format.json { render json: @product.errors, status: :unprocessable_entity }
@@ -70,7 +72,7 @@ class ProductsController < ApplicationController
 		respond_to do |format|
 			if @product.update(product_params)
 				format.html { redirect_to store_products_path(@product.store), notice: "Product was successfully updated." }
-				format.json { render :show, status: :ok, location: @product }
+				format.json { render :show, status: :ok, location: store_product_url(@store, @product) }
 			else
 				format.html { render :edit, status: :unprocessable_entity }
 				format.json { render json: @product.errors, status: :unprocessable_entity }
@@ -81,30 +83,23 @@ class ProductsController < ApplicationController
   # DELETE store/1/products/1
 	def destroy
 		@product.destroy!
-
+	
 		respond_to do |format|
-			format.html { redirect_to store_products_path(@product.store), notice: "Product was successfully updated." }
-			format.json { render :show, status: :ok, location: @product }
+		format.html { redirect_to store_products_path(@product.store), notice: "Product was successfully updated." }
+		format.json { head :no_content }
 		end
 	end
 
-    def set_product
+	def set_product
 		@product = Product.find(params[:id])
-
-		rescue ActiveRecord::RecordNotFound
-			respond_to do |format|
-				format.html do
-					flash[:alert] = "Product not found."
-					if params[:store_id].present?
-						redirect_to store_products_path(params[:store_id]) 
-					else
-						redirect_to stores_path
-					end
-				end
+	rescue ActiveRecord::RecordNotFound
+		respond_to do |format|
+			format.html { render 'products/product_not_found', status: :not_found }
 			format.json { render 'products/product_not_found', status: :not_found }
 		end
-    end
+	end
 
+	#get '/products/:id' => redirect_to ''stores/:store_id/products/:id'
 	def redirect_to_store_product
 		@store = @product.store
 
@@ -114,14 +109,13 @@ class ProductsController < ApplicationController
     private
 
     # Use callbacks to share common setup or constraints between actions.
-    def set_store
+	def set_store
 		@store = Store.find(params[:store_id])
-      
-		rescue ActiveRecord::RecordNotFound
-			respond_to do |format|
-				format.html { render 'stores/store_not_found', status: :not_found }
-				format.json { render 'stores/store_not_found', status: :not_found }
-			end
+	rescue ActiveRecord::RecordNotFound
+		respond_to do |format|
+			format.html { render 'stores/store_not_found', status: :not_found }
+			format.json { render 'stores/store_not_found', status: :not_found }
+		end
 	end
 
 	def authorize_store_owner_and_admin
