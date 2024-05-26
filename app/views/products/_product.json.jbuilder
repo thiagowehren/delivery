@@ -1,2 +1,2 @@
 json.extract! product, :id, :title, :price
-json.url product_url(product, format: :json)
+json.url "#{request.original_url}#{product.id}.json"

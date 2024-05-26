@@ -1,4 +1,10 @@
 <div>
   <h3>Product not found.</h3></br>
-  <%= link_to "Back to store", store_products_path(@store) %>
+  
+  <% if @store.present? %>
+    <%= link_to "Back to store", store_products_path(@store) %>
+  <% else %>
+    <%= link_to "Back to Stores", stores_path %>
+  <% end %>
+  
 </div>
