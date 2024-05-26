@@ -3,21 +3,13 @@ class ProductsController < ApplicationController
     before_action :authenticate!
     before_action :set_product, only: %i[ show edit update destroy redirect_to_store_product]
     before_action :set_store, only: %i[ new create show index ]
-	before_action :redirect_if_not_admin_or_owner, only: [:new, :edit, :create, :update, :destroy]
-	before_action :redirect_seller_if_not_store_owner, only: [:show, :index]
+
+	before_action :authorize_admin, only: %i[listing]
+	before_action :authorize_store_owner_and_admin, only: %i[create new edit update destroy]
+	before_action :authorize_buyer_store_owner_and_admin, only: %i[show index]
 
   # GET /listing
     def listing
-		if !current_user.admin?
-			respond_to do |format|
-				format.html do
-					flash[:notice] = "Unauthorized."
-					redirect_to root_path
-				end
-				format.json { render json: { error: "Unauthorized." }, status: :unauthorized }
-			end
-		end
-
 		@products = Product.includes(:store)
 	end
 
@@ -132,22 +124,34 @@ class ProductsController < ApplicationController
 			end
 	end
 
-    def redirect_if_not_admin_or_owner
+	def authorize_store_owner_and_admin
 		return if current_user == @store.user || current_user.admin?
-
+	  
 		respond_to do |format|
-			format.html { redirect_to stores_url, alert: "User doesn't match with store Owner" }
-			format.json { render json: { error: "Unauthorized" }, status: :unauthorized }
+		  format.html { redirect_to stores_url, alert: "User doesn't match with store Owner." }
+		  format.json { render json: { error: "Unauthorized" }, status: :unauthorized }
 		end
 	end
-
-	def redirect_seller_if_not_store_owner
+	  
+	def authorize_buyer_store_owner_and_admin
 		return if current_user.buyer? || current_user.admin?
 		return if current_user == @store.user
-
+	  
 		respond_to do |format|
-			format.html { redirect_to stores_url, alert: "User doesn't match with store Owner" }
-			format.json { render json: { error: "Unauthorized" }, status: :unauthorized }
+		  format.html { redirect_to stores_url, alert: "User doesn't match with store Owner." }
+		  format.json { render json: { error: "Unauthorized" }, status: :unauthorized }
+		end
+	end
+	  
+	def authorize_admin
+		return if current_user.admin?
+	  
+		respond_to do |format|
+		  format.html do
+			flash[:alert] = "Unauthorized."
+			redirect_to stores_path
+		  end
+		  format.json { render json: { error: "Unauthorized." }, status: :unauthorized }
 		end
 	end
 
