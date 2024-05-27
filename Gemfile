@@ -64,16 +64,12 @@ group :development do
   # gem "spring"
 end
 
-
 gem "devise", "~> 4.9"
 gem "factory_bot_rails"
-
 gem "jwt", "~> 2.8"
-
 gem "devise-jwt", "~> 0.11.0"
-
 gem "rack-cors", "~> 2.0"
-
 gem "state_machines-activerecord", "~> 0.9.0"
-
 gem "acts_as_paranoid", "~> 0.10.0"
+gem 'image_processing', '~> 1.2'
+gem 'mini_magick'
