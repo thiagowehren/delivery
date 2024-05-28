@@ -37,7 +37,11 @@ class ProductsController < ApplicationController
 
   # GET /store/1/products or /store/1/products.json
 	def index		
-		@products = @store.products.includes(:image_attachment => :blob)
+		@products = if current_user.buyer?
+						@products = @store.products.includes(:image_attachment => :blob).visible
+					else
+						@store.products.includes(:image_attachment => :blob)
+					end
 	end
 
   # GET /store/1/products/new
@@ -89,7 +93,11 @@ class ProductsController < ApplicationController
 	end
 
 	def set_product
-		@product = Product.includes(:image_attachment => :blob).find(params[:id])
+		@product =	if current_user.buyer?
+						Product.visible.includes(:image_attachment => :blob).find(params[:id])
+					else
+						Product.includes(:image_attachment => :blob).find(params[:id])
+					end
 	rescue ActiveRecord::RecordNotFound
 		respond_to do |format|
 			format.html { render 'products/product_not_found', status: :not_found }
@@ -108,7 +116,11 @@ class ProductsController < ApplicationController
 
   # Use callbacks to share common setup or constraints between actions.
 	def set_store
-		@store = Store.find(params[:store_id])
+		@store= if current_user.buyer?
+					Store.visible.find(params[:store_id])
+				else
+					Store.find(params[:store_id])
+				end
 	rescue ActiveRecord::RecordNotFound
 		respond_to do |format|
 			format.html { render 'stores/store_not_found', status: :not_found }
@@ -148,7 +160,6 @@ class ProductsController < ApplicationController
 	end
 
 	def product_params
-		params.require(:product).permit(:title, :price, :image)
-		# params.require(:product).permit(:title, :price, :active, :image)
+		params.require(:product).permit(:title, :price, :hidden, :image)
 	end
 end

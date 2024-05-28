@@ -18,7 +18,7 @@ class OrderItem < ApplicationRecord
 
         if (amount.present?)
             if(product.price.nil?)
-                errors.add(:product, "have no set price yet. Therefore is invalid.")
+                errors.add(:product, "have no set price yet. Therefore is not visible and invalid.")
                 return
             end
 
@@ -27,6 +27,11 @@ class OrderItem < ApplicationRecord
 
         if (product.store != order.store)
             errors.add(:product, "should be from `Store`: #{order.store.id},  #{order.store.name} but it's from `Store`: #{product.store.id}, #{product.store.name}")
+            return
+        end
+
+        if (order.store.hidden)
+            errors.add(:store, "is not visible.")
             return
         end
     end

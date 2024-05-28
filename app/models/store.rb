@@ -5,8 +5,9 @@ class Store < ApplicationRecord
     before_validation :ensure_seller
     has_many :products, dependent: :destroy
     has_one_attached :image
+    scope :visible, -> { where(hidden: false) }
     validates :name, presence: true, length: {minimum: 3}
-    
+
     def thumbnail
         image.variant(resize_to_limit: [100, 100]).processed { |v| v.quality(50) }
     end

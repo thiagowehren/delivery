@@ -8,8 +8,10 @@ class StoresController < ApplicationController
   # GET /stores or /stores.json
   def index
     user = current_user()
-    if user.admin? || user.buyer?
+    if user.admin?
       @stores = Store.includes(:image_attachment => :blob).all 
+    elsif user.buyer?
+      @stores = Store.visible.includes(:image_attachment => :blob).all 
     else
       @stores = Store.includes(:image_attachment => :blob).where(user: user[:id])
     end
@@ -87,7 +89,13 @@ class StoresController < ApplicationController
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_store
-      @store = Store.includes(:image_attachment => :blob).find(params[:id])
+      
+      @store  = if current_user.buyer?
+                  Store.visible.includes(:image_attachment => :blob).find(params[:id])
+                else
+                  Store.includes(:image_attachment => :blob).find(params[:id])
+                end
+
       rescue ActiveRecord::RecordNotFound
         respond_to do |format|
           format.html { render 'stores/store_not_found', status: :not_found }
@@ -116,11 +124,9 @@ class StoresController < ApplicationController
     def store_params
       required = params.require(:store)
       if current_user.admin?
-        # required.permit(:name, :user_id, :active, :image)
-        required.permit(:name, :user_id, :image)
+        required.permit(:name, :user_id, :hidden, :image)
       else
-        # required.permit(:name, :active, :image)
-        required.permit(:name, :image)
+        required.permit(:name, :hidden, :image)
       end
     end
 end

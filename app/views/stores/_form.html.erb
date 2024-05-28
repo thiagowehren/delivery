@@ -15,8 +15,8 @@
     <%= form.label :name, style: "display: block" %>
     <%= form.text_field :name %>
 
-    <%= form.check_box :active %>
-    <%= form.label :active, "hidden" %>
+    <%= form.check_box :hidden %>
+    <%= form.label :hidden, "hidden" %>
       
     <% if current_user.admin? && @sellers.present? %>
       <div>
