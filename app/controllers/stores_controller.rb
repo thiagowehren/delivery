@@ -9,15 +9,14 @@ class StoresController < ApplicationController
   def index
     user = current_user()
     if user.admin? || user.buyer?
-      @stores = Store.all 
+      @stores = Store.includes(:image_attachment => :blob).all 
     else
-      @stores = Store.where(user: user[:id])
+      @stores = Store.includes(:image_attachment => :blob).where(user: user[:id])
     end
   end
 
   # GET /stores/1 or /stores/1.json
   def show
-    @store = Store.find(params[:id])
   end
 
   # GET /stores/new
@@ -38,10 +37,6 @@ class StoresController < ApplicationController
 
   # GET /stores/1/edit
   def edit
-    #TODO
-    #edit name
-    #edit image
-    #set to hidden
   end
 
   # POST /stores
@@ -92,7 +87,7 @@ class StoresController < ApplicationController
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_store
-      @store = Store.find(params[:id]) 
+      @store = Store.includes(:image_attachment => :blob).find(params[:id])
       rescue ActiveRecord::RecordNotFound
         respond_to do |format|
           format.html { render 'stores/store_not_found', status: :not_found }
@@ -100,17 +95,6 @@ class StoresController < ApplicationController
         end
     end
 
-    # Only allow a list of trusted parameters through.
-    def store_params
-        required = params.require(:store)
-      if current_user.admin?
-        required.permit(:name,:user_id)
-      else
-        required.permit(:name)
-      end
-    end
-
-    #pair with early return "return if true" to prevent DoubleRenderError
     def redirect_if_not_admin_or_owner
       return if current_user == @store.user || current_user.admin?
   
@@ -129,4 +113,14 @@ class StoresController < ApplicationController
       end
     end
 
+    def store_params
+      required = params.require(:store)
+      if current_user.admin?
+        # required.permit(:name, :user_id, :active, :image)
+        required.permit(:name, :user_id, :image)
+      else
+        # required.permit(:name, :active, :image)
+        required.permit(:name, :image)
+      end
+    end
 end
