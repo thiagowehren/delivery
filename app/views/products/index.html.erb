@@ -7,8 +7,8 @@
   <% end %>
 
   <div>
-    <% if @store.products.any? %>
-      <% (@store.products).each do |product| %>
+    <% if @products.any? %>
+      <% (@products).each do |product| %>
         <div>
           <%= render partial: "products/product", locals: { product: product } %>
           

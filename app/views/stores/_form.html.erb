@@ -1,4 +1,4 @@
-<%= form_with(model: store) do |form| %>
+<%= form_with(model: store, multipart: true) do |form| %>
   <% if store.errors.any? %>
     <div style="color: red">
       <h2><%= pluralize(store.errors.count, "error") %> prohibited this store from being saved:</h2>
@@ -24,6 +24,11 @@
         <%= form.collection_select :user_id, @sellers, :id, :email, prompt: "Select a Seller." %>
       </div>
     <% end %>
+
+    <%= form.label :image, style: "display: block" %>
+    <%= image_tag store.thumbnail if store.image.present? %>
+    <%= form.file_field :image %>
+
   </div>
 
   <div>

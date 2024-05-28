@@ -5,5 +5,7 @@
       <p>store: <%= link_to product.store.name, store_path(product.store) %></p>
     <% end %>
     <p>price: <%= product.price %></p>
+    
+    <%= image_tag product.thumbnail if product.image.present? %>
   </p>
 </div>
