@@ -5,6 +5,10 @@ Rails.application.routes.draw do
 
   resources :stores do
     resources :products, only: [:index, :show, :edit, :update, :new, :create, :destroy]
+    get 'orders', to: 'orders#store_orders', as: :store_orders
+    member do
+      get 'orders/new', to: 'stores#new_order'
+    end
   end
   
   scope :buyers do

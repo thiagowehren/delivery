@@ -4,6 +4,7 @@ class Store < ApplicationRecord
     belongs_to :user
     before_validation :ensure_seller
     has_many :products, dependent: :destroy
+    has_many :orders
     has_one_attached :image
     scope :visible, -> { where(hidden: false) }
     validates :name, presence: true, length: {minimum: 3}

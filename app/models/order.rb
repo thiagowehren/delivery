@@ -25,6 +25,10 @@ class Order < ApplicationRecord
         end
     end
 
+    def total_price
+        order_items.sum(&:price).to_f
+    end
+
     private
 
     def buyer_role
@@ -36,4 +40,5 @@ class Order < ApplicationRecord
     def self.available_states
         state_machine.states.map(&:name)
     end
+
 end

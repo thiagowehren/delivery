@@ -17,12 +17,19 @@
   <hr />
   <p>Products</p>
   
-  <p><%= link_to "Show products", store_products_path(@store) %></p>
+  <p><%= link_to "Show Products", store_products_path(@store) %></p>
 
   <% if current_user.admin? || current_user.eql?(@store.user)%>
     <p><%= link_to "New Product", new_store_product_path(@store) %></p>
   <% end %>
-
   
+  <hr />
+
+  <p>Orders</p>
+
+  <p><%= link_to "Show Orders", store_store_orders_path(@store) %></p>
+  <% if current_user.admin? %>
+    <p><%= link_to "New Order", orders_new_store_path(@store) %></p>
+  <% end %>
   </div>
 </div>

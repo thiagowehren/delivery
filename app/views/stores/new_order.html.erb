@@ -1,0 +1,85 @@
+<%= form_with(model: @order, url: orders_path, local: true) do |f| %>
+  <div>
+    <%= f.hidden_field :store_id, value: @store.id %>
+  </div>
+
+  <% if current_user.admin? %>
+    <div>
+      <%= f.label :buyer_id, "Select Buyer" %>
+      <%= f.collection_select :buyer_id, @buyers, :id, :email, prompt: "Choose a Buyer" %>
+    </div>
+  <% end %>
+
+  <div id="order_items">
+    <h3>Cart</h3>
+    <% @order.order_items.build if @order.order_items.empty? %>
+    <% @order.order_items.each_with_index do |item, index| %>
+      <div class="order_item">
+        <%= f.fields_for "order_items[][#{index}]", item do |item_fields| %>
+          <%= item_fields.label :product_id, "Product" %>
+          <%= item_fields.collection_select :product_id, @products, :id, :title, prompt: "Choose a Product", id: "order_order_items_#{index}_product_id" %>
+          <%= item_fields.label :amount, "Amount" %>
+          <%= item_fields.number_field :amount, min: 1, id: "order_order_items_#{index}_amount" %>
+        <% end %>
+      </div>
+      <div class="order_item">
+        <%= f.fields_for "order_items[][1]", @order.order_items.build do |item_fields| %>
+          <%= item_fields.label :product_id, "Product" %>
+          <%= item_fields.collection_select :product_id, @products, :id, :title, prompt: "Choose a Product", id: "order_order_items_1_product_id" %>
+          <%= item_fields.label :amount, "Amount" %>
+          <%= item_fields.number_field :amount, min: 1, id: "order_order_items_1_amount" %>
+        <% end %>
+      </div>
+    <% end %>
+  </div>
+
+  <div>
+    <button type="button" id="add-item-button">Add Another Product</button>
+  </div>
+
+  <div>
+    <%= f.submit "Create Order", name: "commit", id: "submit-button" %>
+  </div>
+<% end %>
+
+
+
+
+
+<script>
+  function addProductItem() {
+    let orderItemsDiv = document.getElementById('order_items');
+    if (!orderItemsDiv) return; // Garante que o div #order_items exista
+
+    let newItem = document.createElement('div');
+    newItem.classList.add('order_item');
+
+    let timestamp = new Date().getTime(); // Cria um identificador único baseado no timestamp
+
+    newItem.innerHTML = `
+      <label for="order_order_items_${timestamp}_product_id">Product</label>
+      <select name="order[order_items][][product_id]" id="order_order_items_${timestamp}_product_id">
+        <option value="">Choose a Product</option>
+        <% @products.each do |product| %>
+          <option value="<%= product.id %>"><%= product.title %></option>
+        <% end %>
+      </select>
+      <label for="order_order_items_${timestamp}_amount">Amount</label>
+      <input type="number" name="order[order_items][][amount]" id="order_order_items_${timestamp}_amount" min="1" />
+    `;
+
+    orderItemsDiv.appendChild(newItem);
+  }
+
+  function setupAddItemButton() {
+    let addItemButton = document.getElementById('add-item-button');
+    if (addItemButton) {
+      addItemButton.addEventListener('click', addProductItem);
+    }
+  }
+
+  document.addEventListener('turbo:load', function() {
+    console.log("turbo:load event fired");
+    setupAddItemButton();
+  });
+</script>

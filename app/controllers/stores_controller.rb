@@ -1,7 +1,7 @@
 class StoresController < ApplicationController
   skip_forgery_protection only: %i[create update]
   before_action :authenticate!
-  before_action :set_store, only: %i[ show edit update destroy ]
+  before_action :set_store, only: %i[ show edit update destroy new_order]
   before_action :redirect_if_not_admin_or_owner, only: [:edit, :update, :destroy]
   before_action :redirect_if_not_store_owner, only: [:show]
 
@@ -34,6 +34,20 @@ class StoresController < ApplicationController
     
     if current_user.admin?
       @sellers = User.where(role: :seller)
+    end
+  end
+
+  # GET /stores/:id/orders/new   form: POST => buyers/orders
+  def new_order
+    if current_user.admin?
+      @order = Order.new
+      @products = Product.visible.where(store:@store)
+      @buyers = User.where(role: :buyer)
+    else
+      respond_to do |format|
+        format.html { redirect_to store_path(@store), alert: "Unauthorized" }
+        format.json { head :unauthorized }
+      end
     end
   end
 
@@ -89,12 +103,17 @@ class StoresController < ApplicationController
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_store
+
+      if action_name == "new_order"
+        @store = Store.visible.find(params[:id])
+      else
+        @store  = if current_user.buyer?
+                    Store.visible.includes(:image_attachment => :blob).find(params[:id])
+                  else
+                    Store.includes(:image_attachment => :blob).find(params[:id])
+                  end
+      end
       
-      @store  = if current_user.buyer?
-                  Store.visible.includes(:image_attachment => :blob).find(params[:id])
-                else
-                  Store.includes(:image_attachment => :blob).find(params[:id])
-                end
 
       rescue ActiveRecord::RecordNotFound
         respond_to do |format|
