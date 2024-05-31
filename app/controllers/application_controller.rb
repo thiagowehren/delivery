@@ -1,4 +1,10 @@
 class ApplicationController < ActionController::Base
+    rescue_from User::InvalidToken, with: :invalid_token
+
+    def invalid_token
+        render json: { error: 'Token expired' }, status: :unauthorized
+    end
+
     def current_user
         if request.format == Mime[:json]
             @user
@@ -34,10 +40,10 @@ class ApplicationController < ActionController::Base
         Credential.find_by(key: request.headers["X-API-KEY"]) || Credential.new
     end
 
-    def only_buyers!
+    def authorize_admin_and_buyers!
         is_buyer = (current_user && current_user.buyer?) && current_credential.buyer?
         
-        if !is_buyer
+        if !is_buyer && !current_user.admin?
             render json: {message: "Not authorized"}, 
             status: :unauthorized    
         end
