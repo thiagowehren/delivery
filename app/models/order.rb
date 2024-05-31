@@ -32,6 +32,11 @@ class Order < ApplicationRecord
     private
 
     def buyer_role
+        if !buyer
+            errors.add(:buyer, "should exists")
+            return
+        end
+
         if !buyer.buyer?
             errors.add(:buyer, "should be a `user.buyer`")
         end
