@@ -10,38 +10,45 @@ class OrdersController < ApplicationController
 
     def create
         order_items_params = Array.wrap(order_params[:order_items])
-    
+      
         if current_user.admin?
           @order = Order.new(store_id: order_params[:store_id], buyer_id: order_params[:buyer_id])
         else
           @order = Order.new(store_id: order_params[:store_id], buyer: current_user)
         end
-    
+      
         order_item_list = []
-    
+      
         order_items_params.each do |order_item|
           order_item = order_item.permit(:product_id, :amount)
           order_item_obj = OrderItem.new(order_item)
           order_item_obj.order = @order
           order_item_list << order_item_obj
-    
+      
           unless order_item_obj.valid?
             @order.errors.add(:base, "Failed to add one of the items to the order. [item_id: #{order_item_obj.product_id}]")
             @order.errors.add(:causes, order_item_obj.errors.full_messages.to_sentence)
-            render json: { errors: @order.errors }, status: :unprocessable_entity
+            render_errors_and_return
             return
           end
         end
-    
+      
+        if order_item_list.empty?
+          @order.errors.add(:base, "Order must have at least one item")
+          render_errors_and_return
+          return
+        end
+      
         if @order.save
-            order_item_list.map(&:save)
-
-            respond_to do |format|
-                format.html { redirect_to store_store_orders_path(order_params[:store_id]), alert: "Unauthorized" }
-                format.json { render template: 'orders/create', status: :created }
-            end
+          order_item_list.map(&:save)
+      
+          respond_to do |format|
+            format.html { redirect_to store_store_orders_path(order_params[:store_id]), alert: "Unauthorized" }
+            format.json { render template: 'orders/create', status: :created }
+          end
         else
-            render json: {errors: @order.errors}, status: :unprocessable_entity
+          render_errors_and_return
+          return
         end
     end
 
@@ -61,10 +68,17 @@ class OrdersController < ApplicationController
 
     private
 
+    def render_errors_and_return
+        error_message = "Errors: "
+        error_message += @order.errors.full_messages.join(", ")
+        
+        respond_to do |format|
+          format.html { redirect_to orders_new_store_url(order_params[:store_id]), alert: error_message }
+          format.json { render json: { errors: @order.errors }, status: :unprocessable_entity }
+        end
+    end
+
     def order_params
-        p "_------------------------------------------------_"
-        puts params.inspect
-        p "-________________________________________________-"
         if current_user.admin?
             params.require(:order).permit(
                 :store_id,
