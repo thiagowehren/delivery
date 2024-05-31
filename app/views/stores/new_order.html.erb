@@ -1,4 +1,9 @@
 <%= form_with(model: @order, url: orders_path, local: true) do |f| %>
+  
+  <% if flash[:alert].present? %>
+    <p style="color: red"><%= flash[:alert] %></p>
+  <% end %>
+
   <div>
     <%= f.hidden_field :store_id, value: @store.id %>
   </div>
@@ -12,22 +17,14 @@
 
   <div id="order_items">
     <h3>Cart</h3>
-    <% @order.order_items.build if @order.order_items.empty? %>
     <% @order.order_items.each_with_index do |item, index| %>
       <div class="order_item">
-        <%= f.fields_for "order_items[][#{index}]", item do |item_fields| %>
+        <%= f.fields_for "order_items[]", item do |item_fields| %>
+          <%= item_fields.hidden_field :id %>
           <%= item_fields.label :product_id, "Product" %>
           <%= item_fields.collection_select :product_id, @products, :id, :title, prompt: "Choose a Product", id: "order_order_items_#{index}_product_id" %>
           <%= item_fields.label :amount, "Amount" %>
           <%= item_fields.number_field :amount, min: 1, id: "order_order_items_#{index}_amount" %>
-        <% end %>
-      </div>
-      <div class="order_item">
-        <%= f.fields_for "order_items[][1]", @order.order_items.build do |item_fields| %>
-          <%= item_fields.label :product_id, "Product" %>
-          <%= item_fields.collection_select :product_id, @products, :id, :title, prompt: "Choose a Product", id: "order_order_items_1_product_id" %>
-          <%= item_fields.label :amount, "Amount" %>
-          <%= item_fields.number_field :amount, min: 1, id: "order_order_items_1_amount" %>
         <% end %>
       </div>
     <% end %>
