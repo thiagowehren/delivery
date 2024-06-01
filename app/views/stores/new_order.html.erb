@@ -46,12 +46,12 @@
 <script>
   function addProductItem() {
     let orderItemsDiv = document.getElementById('order_items');
-    if (!orderItemsDiv) return; // Garante que o div #order_items exista
+    if (!orderItemsDiv) return;
 
     let newItem = document.createElement('div');
     newItem.classList.add('order_item');
 
-    let timestamp = new Date().getTime(); // Cria um identificador único baseado no timestamp
+    let timestamp = new Date().getTime();
 
     newItem.innerHTML = `
       <label for="order_order_items_${timestamp}_product_id">Product</label>
