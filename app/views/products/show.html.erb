@@ -1,12 +1,22 @@
-<p style="color: green"><%= notice %></p>
-<p style="color: red"><%= alert %></p>
-<h3>Product Details</h3>
-
-<%= render partial: "products/product", locals: { product: @product, show_store_link: true } %>
-
-<div id="<%= dom_id(@product) %>">
-  <% if current_user.admin? || current_user.eql?(@product.store.user)%>
-    <%= link_to "Edit this product", edit_store_product_path(@product.store, @product) %>
-    <%= button_to "Destroy this product", store_product_path(@product.store, @product), method: :delete %>
+<div class="content-container mt-4">
+  <% if notice %>
+    <p class="text-green-500"><%= notice %></p>
   <% end %>
+
+  <% if alert %>
+    <p class="text-red-500"><%= alert %></p>
+  <% end %>
+
+  <h3 class="text-xl font-bold mb-4">Product Details</h3>
+
+  <%= render partial: "products/product", locals: { product: @product, show_store_link: true } %>
+
+  <div id="<%= dom_id(@product) %>" class="mt-4">
+    <% if current_user.admin? || current_user.eql?(@product.store.user) %>
+      <div>
+        <%= link_to "Edit", edit_store_product_path(@product.store, @product) %>
+        <%= button_to "Delete", store_product_path(@product.store, @product), method: :delete, data: { confirm: 'Are you sure you want to delete this product?' }, class: "inline-block bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded" %>
+      </div>
+    <% end %>
+  </div>
 </div>

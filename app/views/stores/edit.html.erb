@@ -1,12 +1,16 @@
-<p style="color: red"><%= alert %></p>
-
-<h1>Editing store</h1>
-
-<%= render "form", store: @store %>
-
-<br>
-
-<div>
-  <%= link_to "Show this store", @store %> |
-  <%= link_to "Back to stores", stores_path %>
+<div class="content-container">
+  <p style="color: red"><%= alert %></p>
+  
+  <div>
+    <h1>Editing store</h1>
+  
+    <%= render "form", store: @store %>
+  </div>
+  
+  <br>
+  
+  <div>
+    <%= link_to "Show this store", @store, class: "mr-2", style: "white-space: nowrap;" %>|
+    <%= link_to "Back to stores", stores_path, style: "white-space: nowrap;" %>
+  </div>
 </div>

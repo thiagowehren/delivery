@@ -1,15 +1,20 @@
-<p style="color: green"><%= notice %></p>
-<p style="color: red"><%= alert %></p>
 
-<h1>Stores</h1>
+<div class="content-container">
+  <p style="color: green"><%= notice %></p>
+  <p style="color: red"><%= alert %></p>
+
+  <h1>Stores</h1>
+
+  <p><%= link_to "New store", new_store_path %></p>
+</div>
 
 <div id="stores">
   <% @stores.each do |store| %>
-    <%= render store %>
-    <p>
-      <%= link_to "Show this store", store %>
-    </p>
+    <div class="mt-4 content-container">
+      <%= render store %>
+      <p>
+        <%= link_to "Show this store", store %>
+      </p>
+    </div>
   <% end %>
 </div>
-
-<%= link_to "New store", new_store_path %>

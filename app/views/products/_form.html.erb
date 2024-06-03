@@ -1,31 +1,46 @@
 <%= form_with(model: [@store, @product], multipart: true) do |form| %>
   <% if @product.errors.any? %>
-    <div style="color: red">
-      <h2><%= pluralize(@product.errors.count, "error") %> prohibited this product from being saved:</h2>
+    <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-2 rounded-md mb-4">
+      <h2 class="font-bold"><%= pluralize(@product.errors.count, "error") %> prohibited this product from being saved:</h2>
       <ul>
-        <% @product.errors.each do |error| %>
-          <li><%= error.full_message %></li>
+        <% @product.errors.full_messages.each do |error| %>
+          <li><%= error %></li>
         <% end %>
       </ul>
     </div>
   <% end %>
 
-  <div>
-    <%= form.label :title, style: "display: block" %>
-    <%= form.text_field :title %>
-
-    <%= form.check_box :hidden %>
-    <%= form.label :hidden, "hidden" %>
-
-    <%= form.label :price, style: "display: block" %>
-    <%= form.text_field :price %>
-
-    <%= form.label :image, style: "display: block" %>
-    <%= image_tag product.thumbnail if product.image.present? %>
-    <%= form.file_field :image %>
+  <div class="flex items-center mb-4">
+    <div class="mr-4 logo">
+      <% if @product.image.present? %>
+        <%= image_tag @product.thumbnail, class: "w-24 h-24 rounded-md" %>
+      <% else %>
+        <%= image_tag "dish-default-256.png", class: "w-24 h-24 rounded-md" %>
+      <% end %>
+    </div>
+    
+    <div class="flex flex-col">
+      <div class="mb-2">
+        <%= form.label :title, class: "block font-bold mb-1" %>
+        <%= form.text_field :title, class: "form-input" %>
+      </div>
+      <div class="mb-2">
+        <%= form.check_box :hidden, class: "form-checkbox h-5 w-5" %>
+        <%= form.label :hidden, "Hidden", class: "text-sm font-medium text-gray-700" %>
+      </div>
+      <div class="mb-2">
+        <%= form.label :price, class: "block font-bold mb-1" %>
+        <%= form.text_field :price, class: "form-input" %>
+      </div>
+    </div>
   </div>
 
+  <div class="mb-4">
+    <%= form.label :image, class: "block font-bold mb-1" %>
+    <%= form.file_field :image, class: "form-input" %>
+  </div>  
+
   <div>
-    <%= form.submit %>
+    <%= form.submit "Update Product", class: "btn-form" %>
   </div>
 <% end %>

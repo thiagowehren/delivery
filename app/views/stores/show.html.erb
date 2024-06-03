@@ -1,31 +1,29 @@
 <p style="color: green"><%= notice %></p>
 <p style="color: red"><%= alert %></p>
 
-<%= render @store %>
-
-<div>
+<div class="content-container">
+  <%= render @store %>
   <% if current_user.admin? || current_user.eql?(@store.user)%>
-    <%= link_to "Edit this store", edit_store_path(@store) %> |
+    <%= link_to "Edit", edit_store_path(@store) %> |
   <% end %>
 
   <%= link_to "Back to stores", stores_path %>
   
   <% if current_user.admin? || current_user.eql?(@store.user) %>
-    <%= button_to "Destroy this store", @store, method: :delete %>
+    <%= button_to "Delete", @store, method: :delete %>
   <% end %>
+</div>
 
-  <hr />
-  <p>Products</p>
+<div class="content-container mt-4">
+  <h3>Products</h3>
   
   <p><%= link_to "Show Products", store_products_path(@store) %></p>
 
   <% if current_user.admin? || current_user.eql?(@store.user)%>
     <p><%= link_to "New Product", new_store_product_path(@store) %></p>
   <% end %>
-  
   <hr />
-
-  <p>Orders</p>
+  <h3>Orders</h3>
 
   <p><%= link_to "Show Orders", store_store_orders_path(@store) %></p>
   <% if current_user.admin? %>

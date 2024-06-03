@@ -1,14 +1,16 @@
-<h1>Products Listing</h1>
+<div class="content-container">
+    <h1>Products Listing</h1>
+</div>
+
 
 <div>
     <% @products.each do |product| %>
-        <div>
+        <div class="content-container mt-4">
             <%= render partial: "products/product", locals: { product: product, show_store_link: true } %>
             
             <% if current_user.admin? || current_user == product.store.user %>
                 <p><%= link_to "Show this product", store_product_path(product.store, product) %></p>
             <% end %>
         </div>
-        <hr />
     <% end %>
 </div>

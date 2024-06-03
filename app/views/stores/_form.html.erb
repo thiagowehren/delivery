@@ -1,37 +1,50 @@
 <%= form_with(model: store, multipart: true) do |form| %>
   <% if store.errors.any? %>
-    <div style="color: red">
-      <h2><%= pluralize(store.errors.count, "error") %> prohibited this store from being saved:</h2>
+    <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-2 rounded-md mb-4">
+      <h2 class="font-bold"><%= pluralize(store.errors.count, "error") %> prohibited this store from being saved:</h2>
 
       <ul>
-        <% store.errors.each do |error| %>
-          <li><%= error.full_message %></li>
+        <% store.errors.full_messages.each do |error| %>
+          <li><%= error %></li>
         <% end %>
       </ul>
     </div>
   <% end %>
 
-  <div>
-    <%= form.label :name, style: "display: block" %>
-    <%= form.text_field :name %>
+  <div class="flex items-center mb-4">
+    <div class="mr-4 logo">
+      <% if store.image.present? %>
+        <%= image_tag store.thumbnail, class: "w-24 h-24 rounded-md" %>
+      <% else %>
+        <%= image_tag "shop-default-256.png", class: "w-24 h-24 rounded-md" %>
+      <% end %>
+    </div>
 
-    <%= form.check_box :hidden %>
-    <%= form.label :hidden, "hidden" %>
-      
-    <% if current_user.admin? && @sellers.present? %>
-      <div>
-        <%= form.label :seller, style: "display:block" %>
-        <%= form.collection_select :user_id, @sellers, :id, :email, prompt: "Select a Seller." %>
+    <div class="flex flex-col">
+      <div class="mb-2">
+        <%= form.label :name, class: "block font-bold mb-1" %>
+        <%= form.text_field :name, class: "form-input" %>
       </div>
-    <% end %>
+      <div class="mb-2">
+        <%= form.check_box :hidden, class: "form-checkbox h-5 w-5" %>
+        <%= form.label :hidden, "Hidden", class: "text-sm font-medium text-gray-700" %>
+      </div>
+    </div>
+  </div>
 
-    <%= form.label :image, style: "display: block" %>
-    <%= image_tag store.thumbnail if store.image.present? %>
-    <%= form.file_field :image %>
+  <% if current_user.admin? && @sellers.present? %>
+    <div class="mb-4">
+      <%= form.label :seller, class: "block font-bold mb-1" %>
+      <%= form.collection_select :user_id, @sellers, :id, :email, prompt: "Select a Seller", class: "form-select" %>
+    </div>
+  <% end %>
 
+  <div class="mb-4">
+    <%= form.label :image, class: "block font-bold mb-1" %>
+    <%= form.file_field :image, class: "form-input" %>
   </div>
 
   <div>
-    <%= form.submit %>
+    <%= form.submit "Update Store", class: "btn-form bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" %>
   </div>
 <% end %>

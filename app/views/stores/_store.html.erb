@@ -1,8 +1,18 @@
 <div id="<%= dom_id store %>">
-  <p>
-    <strong>Name:</strong>
-    <%= store.name %>
-  </p>
 
-  <%= image_tag store.thumbnail if store.image.present? %>
+    <div class="">
+      
+      <div class="inline-flex items-center space-x-4">
+        <div class="logo">
+          <% if store.image.present? %>
+            <%= image_tag store.thumbnail, class: "w-24 h-24" %>
+          <% else %>
+            <%= image_tag "shop-default-256.png", class: "w-24 h-24" %>
+          <% end %>
+        </div>
+        <div>
+          <p><strong><%= store.name %></strong></p>
+        </div>
+      </div>
+    </div>
 </div>
