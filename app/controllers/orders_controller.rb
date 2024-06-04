@@ -60,7 +60,16 @@ class OrdersController < ApplicationController
 
     #GET store/:id/orders
     def store_orders
-        store = Store.find(params[:store_id])
+        begin
+          store = Store.find(params[:store_id])
+        rescue ActiveRecord::RecordNotFound
+          respond_to do |format|
+            format.html { render 'stores/store_not_found', status: :not_found }
+            format.json { render 'stores/store_not_found', status: :not_found }
+          end
+          return
+        end
+
         @orders = store.orders.order(created_at: :desc).includes(:order_items)
 
         render 'orders/store_orders', status: :ok
