@@ -93,7 +93,7 @@ RSpec.describe "/stores/:store_id/products", type: :request do
         get store_product_url(store, product)
         expect(response).to have_http_status(:success)
         expect(response.body).to include(valid_product_attributes[:title])
-        expect(response.body).to include("price: #{valid_product_attributes[:price]}")
+        expect(response.body).to include("Price: #{valid_product_attributes[:price]}")
       end
     end
 
