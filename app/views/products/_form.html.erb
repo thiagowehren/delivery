@@ -32,6 +32,11 @@
         <%= form.label :price, class: "block font-bold mb-1" %>
         <%= form.text_field :price, class: "form-input" %>
       </div>
+      <div class="mb-2">
+        <%= form.label :expires_in, class: "block font-bold mb-1" %>
+        <%= form.select :expires_in, 
+          [['never', 0],['5 seconds', 5],['1 hour', 3600],['2 hours', 7200],['6 minutes', 1800],['1 day', 86400]],class: "form-input" %>
+      </div>
     </div>
   </div>
 
@@ -41,6 +46,6 @@
   </div>  
 
   <div>
-    <%= form.submit "Update Product", class: "btn-form" %>
+    <%= form.submit product.persisted? ? "Update Product" : "Create Product", class: "btn-form" %>
   </div>
 <% end %>

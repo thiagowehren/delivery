@@ -38,9 +38,9 @@ class ProductsController < ApplicationController
   # GET /store/1/products or /store/1/products.json
 	def index		
 		@products = if current_user.buyer?
-						@products = @store.products.includes(:image_attachment => :blob).visible
+						@store.products.visible.not_expired.includes(:image_attachment => :blob)
 					else
-						@store.products.includes(:image_attachment => :blob)
+						@store.products.not_expired.includes(:image_attachment => :blob).not_expired
 					end
 	end
 
@@ -94,9 +94,9 @@ class ProductsController < ApplicationController
 
 	def set_product
 		@product =	if current_user.buyer?
-						Product.visible.includes(:image_attachment => :blob).find(params[:id])
+						Product.visible.not_expired.includes(:image_attachment => :blob).find(params[:id])
 					else
-						Product.includes(:image_attachment => :blob).find(params[:id])
+						Product.not_expired.includes(:image_attachment => :blob).find(params[:id])
 					end
 	rescue ActiveRecord::RecordNotFound
 		respond_to do |format|
@@ -160,6 +160,6 @@ class ProductsController < ApplicationController
 	end
 
 	def product_params
-		params.require(:product).permit(:title, :price, :hidden, :image)
+		params.require(:product).permit(:title, :price, :hidden, :image, :expires_in)
 	end
 end

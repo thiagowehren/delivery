@@ -1,9 +1,11 @@
 class Product < ApplicationRecord
+  include Expirable
   acts_as_paranoid
-  
+
   belongs_to :store
   before_save :set_hidden_if_priceless
   scope :visible, -> { where(hidden: false) }
+  scope :not_expired, -> { where(expired: false) }
   validates :title, presence: true, length: {minimum: 1}
   has_one_attached :image
   has_many :orders, through: :order_items

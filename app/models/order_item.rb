@@ -29,6 +29,17 @@ class OrderItem < ApplicationRecord
             errors.add(:product, "should be from `Store`: #{order.store.id},  #{order.store.name} but it's from `Store`: #{product.store.id}, #{product.store.name}")
             return
         end
+        
+        if (product.expired)
+            errors.add(:product, "is not visible.")
+            return
+        end
+
+                
+        if (product.hidden)
+            errors.add(:product, "is not visible.")
+            return
+        end
 
         if (order.store.hidden)
             errors.add(:store, "is not visible.")
