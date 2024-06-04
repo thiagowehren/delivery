@@ -41,7 +41,7 @@ class StoresController < ApplicationController
   def new_order
     if current_user.admin?
       @order = Order.new
-      @products = Product.visible.where(store:@store)
+      @products = Product.visible.not_expired.where(store:@store)
       @buyers = User.where(role: :buyer)
     else
       respond_to do |format|
