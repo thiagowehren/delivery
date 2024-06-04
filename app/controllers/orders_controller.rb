@@ -61,11 +61,20 @@ class OrdersController < ApplicationController
     #GET store/:id/orders
     def store_orders
         begin
-          store = Store.find(params[:store_id])
+          store = Store.includes(:user).find(params[:store_id])
         rescue ActiveRecord::RecordNotFound
           respond_to do |format|
             format.html { render 'stores/store_not_found', status: :not_found }
             format.json { render 'stores/store_not_found', status: :not_found }
+          end
+          return
+        end
+
+        # admin or store owner
+        unless current_user == store.user || current_user.admin?
+          respond_to do |format|
+            format.html { redirect_to stores_url, alert: "User doesn't match with store Owner" }
+            format.json { render json: {error: "Unauthorized"}, status: :unauthorized }
           end
           return
         end
