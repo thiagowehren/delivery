@@ -74,3 +74,5 @@ gem "acts_as_paranoid", "~> 0.10.0"
 gem 'image_processing', '~> 1.2'
 gem 'mini_magick'
 gem "tailwindcss-rails", "~> 2.6"
+
+gem "kaminari", "~> 1.2"
