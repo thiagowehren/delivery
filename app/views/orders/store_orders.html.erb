@@ -4,12 +4,9 @@
   
   <% if @orders.any? %>
     <% @orders.each do |order| %>
-      <div class="content-container mt-4">
-        <p><strong>Order ID:</strong> #<%= order.id %></p>
-        <p><strong>Status:</strong> <%= order.state %></p>
-        <p><strong>Created At:</strong> <%= order.created_at.in_time_zone("Brasilia").strftime("%H:%M %d/%m/%Y") %></p>
-        <p><strong>Price:</strong> <%= order.total_price%></p>
-      </div>
+       <div class="content-container mt-4">
+        <%= render partial: "orders/order", locals: { order: order } %>
+       </div>
     <% end %>
   <% else %>
     <div class="content-container mt-4">

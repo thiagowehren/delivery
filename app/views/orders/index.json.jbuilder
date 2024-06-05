@@ -1,1 +1,4 @@
-json.array! @orders, :id, :state, :created_at
+json.orders @orders do |order|
+    json.partial! "orders/order", locals: { order: order }
+end
+  
