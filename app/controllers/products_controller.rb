@@ -12,7 +12,11 @@ class ProductsController < ApplicationController
 
   # GET /listing
 	def listing
+		page = params.fetch(:page, 1)
+
 		@products = Product.includes(:store, :image_attachment => :blob)
+		@products = @products.not_expired
+		@products = @products.page(page)
 	end
 
   # GET store/1/products/1 or store/1/products/1.json
@@ -36,12 +40,12 @@ class ProductsController < ApplicationController
 	end
 
   # GET /store/1/products or /store/1/products.json
-	def index		
-		@products = if current_user.buyer?
-						@store.products.visible.not_expired.includes(:image_attachment => :blob)
-					else
-						@store.products.not_expired.includes(:image_attachment => :blob).not_expired
-					end
+	def index
+		page = params.fetch(:page, 1)
+
+		@products = @store.products.not_expired.includes(image_attachment: :blob)
+		@products = @products.visible if current_user.buyer?
+		@products = @products.page(page)
 	end
 
   # GET /store/1/products/new

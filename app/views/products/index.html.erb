@@ -18,6 +18,9 @@
   <% end %>
 </div>
   
+<div class="content-container mt-4">
+  <%= paginate @products %>
+</div>
 
 <div>
   <% if @products.any? %>
@@ -32,4 +35,8 @@
     <p>Empty</p>
   </div>
   <% end %>
+</div>
+
+<div class="content-container mt-4 mb-4">
+  <%= paginate @products %>
 </div>
