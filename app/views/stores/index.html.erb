@@ -15,6 +15,10 @@
   <p><%= link_to "New store", new_store_path %></p>
 </div>
 
+<div class="content-container mt-4 mb-4">
+  <%= paginate @stores %>
+</div>
+
 <div id="stores">
   <% @stores.each do |store| %>
     <div class="mt-4 content-container">
@@ -24,4 +28,8 @@
       </p>
     </div>
   <% end %>
+</div>
+
+<div class="content-container mt-4 mb-4">
+  <%= paginate @stores %>
 </div>

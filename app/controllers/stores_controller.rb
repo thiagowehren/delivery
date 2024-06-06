@@ -7,14 +7,16 @@ class StoresController < ApplicationController
 
   # GET /stores or /stores.json
   def index
+    page = params.fetch(:page, 1)
     user = current_user()
     if user.admin?
-      @stores = Store.includes(:image_attachment => :blob).all 
+      @stores = Store.includes(:image_attachment => :blob) 
     elsif user.buyer?
-      @stores = Store.visible.includes(:image_attachment => :blob).all 
+      @stores = Store.visible.includes(:image_attachment => :blob) 
     else
       @stores = Store.includes(:image_attachment => :blob).where(user: user[:id])
     end
+    @stores = @stores.page(page)
   end
 
   # GET /stores/1 or /stores/1.json
