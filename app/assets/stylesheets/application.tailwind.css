@@ -7,7 +7,7 @@
     @apply mt-2 bg-red-500 px-2 py-1 text-white text-lg font-medium rounded cursor-pointer;
   }
   .btn-form {
-    @apply bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded cursor-pointer;
+    @apply bg-red-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded cursor-pointer;
   }
   .btn-signup {
     @apply bg-red-500 text-white text-lg font-medium px-6 py-2 rounded-full !no-underline;
@@ -26,30 +26,5 @@
   }
   .body-custom {
     @apply bg-orange-200 p-1.5;
-  }
-
-  /* pagination */
-  .pagination {
-    @apply flex justify-center space-x-2;
-  }
-
-  .pagination span,
-  .pagination a {
-    @apply inline-flex items-center justify-center px-3 py-1 border border-gray-300 rounded-md text-gray-700 bg-white hover:bg-gray-100;
-  }
-
-  .pagination .page.current {
-    @apply font-bold;
-  }
-
-  .pagination .gap {
-    @apply font-bold;
-  }
-
-  .pagination .prev,
-  .pagination .next,
-  .pagination .first,
-  .pagination .last {
-    @apply inline-flex items-center justify-center px-3 py-1 border border-gray-300 rounded-md text-gray-700 bg-white hover:bg-gray-100;
   }
 }

@@ -32,9 +32,22 @@ RUN useradd rails --create-home --shell /bin/bash && \
     chown -R rails:rails db log storage tmp
 USER rails:rails
 
+# Install foreman as root
+USER root
+RUN gem install foreman
+
+# Copy the startup script
+COPY bin/dev /rails/bin/dev
+
+# # Run and own only the runtime files as a non-root user for security
+# RUN useradd rails --create-home --shell /bin/bash && \
+#     chown -R rails:rails db log storage tmp
+# USER rails:rails
+
 # Entrypoint prepares the database.
 ENTRYPOINT ["/rails/bin/docker-entrypoint"]
 
 # Start the server by default, this can be overwritten at runtime
 EXPOSE 8000
-CMD ["./bin/rails", "server", "-b", "0.0.0.0", "-p", "8000"]
+ENTRYPOINT ["./bin/dev"]
+# CMD ["./bin/dev","./bin/rails", "server", "-b", "0.0.0.0", "-p", "8000"]
