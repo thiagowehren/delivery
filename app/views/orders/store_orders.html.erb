@@ -2,14 +2,22 @@
   <h1>Orders</h1>
 </div>
   
-  <% if @orders.any? %>
-    <% @orders.each do |order| %>
-       <div class="content-container mt-4">
-        <%= render partial: "orders/order", locals: { order: order } %>
-       </div>
-    <% end %>
-  <% else %>
-    <div class="content-container mt-4">
-      <p>Empty</p>
-    </div>
+<div class="content-container mt-4 mb-4">
+    <%= paginate @orders %>
+</div>
+
+<% if @orders.any? %>
+  <% @orders.each do |order| %>
+      <div class="content-container mt-4">
+      <%= render partial: "orders/order", locals: { order: order } %>
+      </div>
   <% end %>
+<% else %>
+  <div class="content-container mt-4">
+    <p>Empty</p>
+  </div>
+<% end %>
+
+<div class="content-container mt-4 mb-4">
+    <%= paginate @orders %>
+</div>

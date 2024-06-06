@@ -4,7 +4,9 @@ class OrdersController < ApplicationController
     before_action :authorize_admin_and_buyers!, except: [:store_orders]
 
     def index
+        page = params.fetch(:page, 1)
         @orders = Order.where(buyer: current_user).order(created_at: :desc)
+        @orders = @orders.page
         render'orders/index', status: :ok
     end
 
@@ -60,6 +62,8 @@ class OrdersController < ApplicationController
 
     #GET store/:id/orders
     def store_orders
+        page = params.fetch(:page, 1)
+
         begin
           store = Store.includes(:user).find(params[:store_id])
         rescue ActiveRecord::RecordNotFound
@@ -80,6 +84,7 @@ class OrdersController < ApplicationController
         end
 
         @orders = store.orders.order(created_at: :desc).includes(:order_items)
+        @orders = @orders.page(page)
 
         render 'orders/store_orders', status: :ok
     end
