@@ -22,13 +22,7 @@ class Product < ApplicationRecord
     if image.attached?
       image
     else
-      default_image = Rails.root.join("app", "assets", "images", "dish-default-256.png")
-      if File.exist?(default_image)
-        ActiveStorage::Attached::One.new(:image, self).attach(io: File.open(default_image), filename: "dish-default-256.png", content_type: "image/png")
-      else
-        Rails.logger.error("File not found from Product model: #{default_image}")
-        nil
-      end
+      nil
     end
   end
 
