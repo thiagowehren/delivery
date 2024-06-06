@@ -6,7 +6,7 @@ class OrdersController < ApplicationController
     def index
         page = params.fetch(:page, 1)
         @orders = Order.where(buyer: current_user).order(created_at: :desc)
-        @orders = @orders.page
+        @orders = @orders.page(page)
         render'orders/index', status: :ok
     end
 
