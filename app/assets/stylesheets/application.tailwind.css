@@ -3,6 +3,17 @@
 @tailwind utilities;
 
 @layer components {
+
+  .body-custom {
+    @apply bg-orange-200 p-1.5;
+  }
+
+  /* Containers */
+  .content-container {
+    @apply border-2 border-white rounded-md bg-white p-5;
+  }
+
+  /* Buttons */
   .btn-primary {
     @apply mt-2 bg-red-500 px-2 py-1 text-white text-lg font-medium rounded cursor-pointer;
   }
@@ -18,13 +29,30 @@
   .btn-delete {
     @apply inline-block bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded;
   }
+  /* Logo */
   .logo {
     @apply flex justify-center items-center bg-gray-200 w-24 h-24 rounded-full overflow-hidden
   }
-  .content-container {
-    @apply border-2 border-white rounded-md bg-white p-5;
+  /* Pagination Kaminari */
+  .pagination {
+    @apply flex justify-center items-center space-x-2 !no-underline;
   }
-  .body-custom {
-    @apply bg-orange-200 p-1.5;
+  .pagination > * {
+    @apply flex justify-center items-center rounded-full border border-gray-300 text-sm font-medium py-1 px-2;
+  }
+  .pagination > *:hover {
+    @apply bg-gray-200;
+  }
+  .pagination .page.current {
+    @apply bg-blue-500 text-white;
+  }
+  .pagination .page:not(.current) {
+    @apply hover:bg-blue-200;
+  }
+  .pagination .first a,
+  .pagination .prev a,
+  .pagination .next a,
+  .pagination .last a {
+    @apply !no-underline;
   }
 }
