@@ -1,5 +1,6 @@
 class ApplicationController < ActionController::Base
     rescue_from User::InvalidToken, with: :invalid_token
+    before_action :set_locale!
 
     def invalid_token
         render json: { error: 'Token expired' }, status: :unauthorized
@@ -47,5 +48,13 @@ class ApplicationController < ActionController::Base
             render json: {message: "Not authorized"}, 
             status: :unauthorized    
         end
+    end
+
+    def set_locale!
+        if params[:locale].present?
+            I18n.locale = params[:locale]       
+       else
+            I18n.locale = "pt-BR"
+       end
     end
 end
