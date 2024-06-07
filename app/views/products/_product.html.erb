@@ -1,5 +1,5 @@
 <div id="<%= dom_id product %>" class="mb-4">
-  <div class="inline-flex items-start space-x-4">
+  <div class="inline-flex items-start space-x-4 w-full">
     <div class="logo">
       <% if product.image.present? %>
         <%= image_tag product.thumbnail, class: "w-24 h-24", alt: product.title %>
@@ -7,8 +7,8 @@
         <%= image_tag "dish-default-256.png", class: "w-24 h-24", alt: "Default Shop Image" %>
       <% end %>
     </div>
-    <div>
-      <h4 class="font-bold text-lg m-0"><%= product.title %></h4>
+    <div class="flex-1 min-w-0">
+      <h4 class="font-bold text-lg m-0 truncate"  style="max-width: 150px;"><%= product.title %></h4>
       <p class="text-gray-700 mt-1 mb-1">Price: <%= product.price %></p>
       <% if defined?(show_store_link) %>
         <p class="text-gray-700 mt-1 mb-1">Store: <%= link_to product.store.name, store_path(product.store), class: "text-blue-500 hover:underline" %></p>

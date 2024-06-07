@@ -1,23 +1,27 @@
-<div class="content-container">
+<div class="content-container mb-1">
   <h1>Orders</h1>
 </div>
   
-<div class="content-container mt-4 mb-4">
+<div class="absolute left-0 right-0 content-container mt-4 mb-4">
     <%= paginate @orders %>
 </div>
 
+<div class="relative mt-24">
 <% if @orders.any? %>
-  <% @orders.each do |order| %>
-      <div class="content-container mt-4">
-      <%= render partial: "orders/order", locals: { order: order } %>
-      </div>
-  <% end %>
+  <div class="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-3">
+    <% @orders.each do |order| %>
+        <div class="content-container mt-4">
+        <%= render partial: "orders/order", locals: { order: order } %>
+        </div>
+    <% end %>
+  </div>
 <% else %>
   <div class="content-container mt-4">
     <p>Empty</p>
   </div>
 <% end %>
+</div>
 
-<div class="content-container mt-4 mb-4">
+<div class="absolute left-0 right-0 content-container mt-4 mb-4">
     <%= paginate @orders %>
 </div>

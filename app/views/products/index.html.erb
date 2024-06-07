@@ -10,7 +10,7 @@
   </div>
 <% end %>
 
-<div class="content-container">
+<div class="content-container mb-1">
   <%= turbo_stream_from "products" %>
   <h1>Products</h1>
   <% if current_user.admin? || current_user.eql?(@store.user)%>
@@ -18,18 +18,20 @@
   <% end %>
 </div>
   
-<div class="content-container mt-4">
+<div class="absolute left-0 right-0 content-container mt-4 mb-4">
   <%= paginate @products %>
 </div>
 
-<div>
+<div class="relative mt-28">
   <% if @products.any? %>
-    <% (@products).each do |product| %>
-      <div class="content-container mt-4" id="<%= dom_id(product) %>">
-        <%= render partial: "products/product", locals: { product: product } %>
-        <p><%= link_to "Show this product", store_product_path(@store, product) %></p> 
-      </div>
-    <% end %>
+  <div class="grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-3 gap-y-4">
+      <% @products.each do |product| %>
+        <div class="content-container mt-4" id="<%= dom_id(product) %>">
+          <%= render partial: "products/product", locals: { product: product } %>
+          <p><%= link_to "Show this product", store_product_path(@store, product) %></p> 
+        </div>
+      <% end %>
+    </div>
   <% else %>
   <div class="content-container mt-4">
     <p>Empty</p>
@@ -37,6 +39,6 @@
   <% end %>
 </div>
 
-<div class="content-container mt-4 mb-4">
+<div class="absolute left-0 right-0 content-container mt-4 mb-4">
   <%= paginate @products %>
 </div>
