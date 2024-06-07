@@ -1,2 +1,2 @@
 json.extract! order, :id, :state, :created_at
-json.total_price order.total_price
+json.total_price number_to_currency(order.total_price)
