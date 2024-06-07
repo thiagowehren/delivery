@@ -83,6 +83,7 @@ RSpec.describe "/stores/:store_id/products", type: :request do
   end
 
   describe "GET #show /stores/:id/products/:id" do
+  include ActionView::Helpers::NumberHelper
     context "as store owner" do
       before { sign_in(seller) }
 
@@ -93,7 +94,17 @@ RSpec.describe "/stores/:store_id/products", type: :request do
         get store_product_url(store, product)
         expect(response).to have_http_status(:success)
         expect(response.body).to include(valid_product_attributes[:title])
-        expect(response.body).to include("Price: #{valid_product_attributes[:price]}")
+        
+        formatted_price = case I18n.locale
+        when :'pt-BR'
+          number_with_precision(valid_product_attributes[:price], precision: 2, separator: ',')
+        when :'en'
+          number_with_precision(valid_product_attributes[:price], precision: 2)
+        else
+          number_with_precision(valid_product_attributes[:price], precision: 2)
+        end
+        expect(response.body).to include(formatted_price)
+
       end
     end
 

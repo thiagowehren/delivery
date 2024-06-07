@@ -209,7 +209,7 @@ RSpec.describe "/stores", type: :request do
                     }
                 )
                 json = JSON.parse(response.body)
-                expect(json.length).to eq(1)
+                expect(json["stores"].length).to eq(1)
                 expect(response).to have_http_status(:success)
             end
     
@@ -223,7 +223,7 @@ RSpec.describe "/stores", type: :request do
                     }
                 )
                 json = JSON.parse(response.body)
-                expect(json.length).to eq(0)
+                expect(json["stores"].length).to eq(0)
                 expect(response).to have_http_status(:success)
             end
     

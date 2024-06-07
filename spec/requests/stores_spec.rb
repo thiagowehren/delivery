@@ -18,10 +18,12 @@ RSpec.describe "/stores", type: :request do
 
     describe "belongs_to" do
       it "should not belong to admin users" do
-        store = Store.create(name: "store", user: admin)
-        expect(store).not_to be_valid
-        expect(store.valid?).to be_falsey
-        expect(store.errors.full_messages).to eq (["User must exist"])
+        I18n.with_locale(:en) do
+          store = Store.create(name: "store", user: admin)
+          expect(store).not_to be_valid
+          expect(store.valid?).to be_falsey
+          expect(store.errors.full_messages).to eq (["User must exist"])
+        end
       end
     end
 

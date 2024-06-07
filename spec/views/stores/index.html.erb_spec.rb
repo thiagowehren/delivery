@@ -2,10 +2,11 @@ require 'rails_helper'
 
 RSpec.describe "stores/index", type: :view do
   before(:each) do
-    assign(:stores, [
-      FactoryBot.create(:store),
-      FactoryBot.create(:store)
-    ])
+    stores = Kaminari.paginate_array([
+      FactoryBot.create(:store, name: "Example Store"),
+      FactoryBot.create(:store, name: "Example Store")
+    ]).page(1).per(25)
+    assign(:stores, stores)
   end
 
   it "renders a list of stores" do
