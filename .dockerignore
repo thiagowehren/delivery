@@ -25,10 +25,10 @@
 !/tmp/pids/.keep
 
 # Ignore storage (uploaded files in development and any SQLite databases).
-/storage/*
-!/storage/.keep
-/tmp/storage/*
-!/tmp/storage/.keep
+# /storage/*
+# !/storage/.keep
+# /tmp/storage/*
+# !/tmp/storage/.keep
 
 # Ignore assets.
 /node_modules/
