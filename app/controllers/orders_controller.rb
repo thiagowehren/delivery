@@ -1,13 +1,24 @@
 class OrdersController < ApplicationController
     skip_forgery_protection
     before_action :authenticate!
-    before_action :authorize_admin_and_buyers!, except: [:store_orders]
+    before_action :authorize_admin_and_buyers!, except: [:store_orders, :show]
+
+    before_action :set_order, only: %i[ show ]
 
     def index
         page = params.fetch(:page, 1)
         @orders = Order.where(buyer: current_user).order(created_at: :desc)
         @orders = @orders.page(page)
         render'orders/index', status: :ok
+    end
+
+    def show
+      if @order.store.user != current_user && @order.buyer != current_user
+        respond_to do |format|
+          format.json { render json: { error: { message: "This Order doesn't belong to you." }}, status: :unprocessable_entity }
+        end
+        return
+      end
     end
 
     def create
@@ -90,6 +101,14 @@ class OrdersController < ApplicationController
     end
 
     private
+
+    def set_order
+      @order = Order.includes(store: :user, buyer: {}, order_items: :product).find(params[:id])
+    rescue ActiveRecord::RecordNotFound
+      respond_to do |format|
+        format.json { head :no_content, status: :not_found }
+      end
+    end
 
     def render_errors_and_return
         error_message = "Errors: "
