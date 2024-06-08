@@ -5,17 +5,15 @@ ARG RUBY_VERSION=3.2.2
 FROM registry.docker.com/library/ruby:$RUBY_VERSION-slim as base
 
 # Rails app lives here
-WORKDIR /rails
+WORKDIR /delivery
 
 # Set development environment
 ENV RAILS_ENV="development" \
     BUNDLE_WITHOUT=""
 
-
-
 # Install packages needed to build gems
 RUN apt-get update -qq && \
-    apt-get install --no-install-recommends -y build-essential git libvips pkg-config imagemagick
+    apt-get install --no-install-recommends -y build-essential git libvips pkg-config imagemagick libsqlite3-0
 
 # Install application gems
 COPY Gemfile Gemfile.lock ./
@@ -37,17 +35,14 @@ USER root
 RUN gem install foreman
 
 # Copy the startup script
-COPY bin/dev /rails/bin/dev
+COPY bin/dev /delivery/bin/dev
 
-# # Run and own only the runtime files as a non-root user for security
-# RUN useradd rails --create-home --shell /bin/bash && \
-#     chown -R rails:rails db log storage tmp
-# USER rails:rails
+# Ensure the master.key is copied
+COPY config/master.key /delivery/config/master.key
 
 # Entrypoint prepares the database.
-ENTRYPOINT ["/rails/bin/docker-entrypoint"]
+ENTRYPOINT ["/delivery/bin/docker-entrypoint"]
 
 # Start the server by default, this can be overwritten at runtime
 EXPOSE 8000
-ENTRYPOINT ["./bin/dev"]
-# CMD ["./bin/dev","./bin/rails", "server", "-b", "0.0.0.0", "-p", "8000"]
+CMD ["./bin/dev"]
