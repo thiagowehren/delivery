@@ -1,5 +1,5 @@
 class ProductsController < ApplicationController
-	skip_forgery_protection only: %i[create update]
+	skip_forgery_protection only: %i[create update destroy]
 
 	before_action :authenticate!
 

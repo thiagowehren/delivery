@@ -1,5 +1,5 @@
 class StoresController < ApplicationController
-  skip_forgery_protection only: %i[create update]
+  skip_forgery_protection only: %i[create update destroy]
   before_action :authenticate!
   before_action :set_store, only: %i[ show edit update destroy new_order]
   before_action :redirect_if_not_admin_or_owner, only: [:edit, :update, :destroy]
