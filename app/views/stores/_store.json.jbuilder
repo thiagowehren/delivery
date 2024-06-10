@@ -1,4 +1,7 @@
-json.extract! store, :id, :name, :created_at, :updated_at
+json.id store.id
+json.name store.name
+json.created_at store.created_at.in_time_zone("Brasilia").strftime("%H:%M %d/%m/%Y")
+json.updated_at store.updated_at.in_time_zone("Brasilia").strftime("%H:%M %d/%m/%Y")
 json.url store_url(store, format: :json)
 
 if current_user.seller?
