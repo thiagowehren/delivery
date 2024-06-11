@@ -1,13 +1,13 @@
 class OrdersController < ApplicationController
     skip_forgery_protection
     before_action :authenticate!
-    before_action :authorize_admin_and_buyers!, except: [:store_orders, :show]
-
-    before_action :set_order, only: %i[ show ]
+    before_action :authorize_admin_and_buyers!, except: [ :store_orders, :show, :accept, :dispatch_order, :complete, :cancel, :authorize_seller_owner ]
+    before_action :set_order, only: %i[ show accept dispatch_order complete cancel ]
+    before_action :authorize_seller_owner, only: %i[ accept dispatch_order complete ]
 
     def index
         page = params.fetch(:page, 1)
-        @orders = Order.where(buyer: current_user).order(created_at: :desc)
+        @orders = Order.where(buyer: current_user).order(created_at: :desc).includes([:order_items])
         @orders = @orders.page(page)
         render'orders/index', status: :ok
     end
@@ -15,7 +15,7 @@ class OrdersController < ApplicationController
     def show
       if @order.store.user != current_user && @order.buyer != current_user
         respond_to do |format|
-          format.json { render json: { error: { message: "This Order doesn't belong to you." }}, status: :unprocessable_entity }
+          format.json { render json: { error: { message: "This Order doesn't belong to you." }}, status: :unauthorized }
         end
         return
       end
@@ -98,6 +98,56 @@ class OrdersController < ApplicationController
         @orders = @orders.page(page)
 
         render 'orders/store_orders', status: :ok
+    end
+
+    def accept
+      if @order.accept
+        render partial: 'order', locals: { order: @order }, status: :ok
+      else
+        render json: { error: 'Unable to accept order' }, status: :unprocessable_entity
+      end
+    end
+  
+    def dispatch_order
+      if @order.dispatch
+        render partial: 'order', locals: { order: @order }, status: :ok
+      else
+        render json: { error: 'Unable to dispatch order' }, status: :unprocessable_entity
+      end
+    end
+  
+    def complete
+      if @order.complete
+        render partial: 'order', locals: { order: @order }, status: :ok
+      else
+        render json: { error: 'Unable to complete order' }, status: :unprocessable_entity
+      end
+    end
+  
+    def cancel
+      if @order.store.user != current_user && @order.buyer != current_user
+        respond_to do |format|
+          format.html { redirect_to stores_url, alert: "Unauthorized" }
+          format.json { render json: { error: "Unauthorized" }, status: :unauthorized }
+        end
+        return
+      end
+
+      if @order.cancel 
+        render partial: 'order', locals: { order: @order }, status: :ok
+      else
+        render json: { error: 'Unable to cancel order' }, status: :unprocessable_entity
+      end
+    end
+
+    def authorize_seller_owner
+      return if current_user.admin?
+      return if @order.store.user == current_user
+  
+      respond_to do |format|
+        format.html { redirect_to stores_url, alert: "Unauthorized" }
+        format.json { render json: { error: "Unauthorized" }, status: :unauthorized }
+      end  
     end
 
     private

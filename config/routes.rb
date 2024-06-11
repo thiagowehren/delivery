@@ -15,8 +15,15 @@ Rails.application.routes.draw do
     resources :orders, only: [:index, :create, :update, :destroy]
   end
 
-  resources :orders, only: [:show]
-  
+  resources :orders, only: [:show] do
+    member do
+      put :accept
+      put :dispatch_order
+      put :complete
+      put :cancel
+    end
+  end
+
   root to: "welcome#index"
   get "up" => "rails/health#show", as: :rails_health_check
   
