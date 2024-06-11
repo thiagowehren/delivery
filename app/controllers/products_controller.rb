@@ -31,11 +31,7 @@ class ProductsController < ApplicationController
 
 		respond_to do |format|
 			format.html
-			format.json do
-				product_json = @product.as_json(only: [:id, :title, :price])
-				product_json['store_url'] = store_url(@product.store, format: :json)
-				render json: product_json
-			end
+			format.json { render :show, status: :created, location: store_product_url(@store, @product) }
 		end
 	end
 
