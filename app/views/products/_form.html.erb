@@ -13,7 +13,7 @@
   <div class="flex items-center mb-4">
     <div class="mr-4 logo">
       <% if @product.image.present? %>
-        <%= image_tag @product.thumbnail, class: "w-24 h-24 rounded-md" %>
+        <%= image_tag @product.image_with_default, class: "w-24 h-24 rounded-md" %>
       <% else %>
         <%= image_tag "dish-default-256.png", class: "w-24 h-24 rounded-md" %>
       <% end %>

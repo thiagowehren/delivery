@@ -2,7 +2,7 @@
   <div class="inline-flex items-start space-x-4 w-full">
     <div class="logo">
       <% if product.image.present? %>
-        <%= image_tag product.thumbnail, class: "w-24 h-24", alt: product.title %>
+        <%= image_tag product.image_with_default, class: "w-24 h-24", alt: product.title %>
       <% else %>
         <%= image_tag "dish-default-256.png", class: "w-24 h-24", alt: "Default Shop Image" %>
       <% end %>
