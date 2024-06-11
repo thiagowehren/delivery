@@ -5,9 +5,11 @@ class Order < ApplicationRecord
     has_many :order_items
     has_many :products, through: :order_items
 
-    validate :buyer_role
+    validate :buyer_role 
 
     state_machine initial: :created do
+        after_transition accepted: :dispatched, do: :process_dispatch
+
         event :accept do
             transition created: :accepted
         end
@@ -21,12 +23,21 @@ class Order < ApplicationRecord
         end
 
         event :cancel do
-            transition any => :cancelled, unless: :completed?
+            transition any => :cancelled, unless: [:completed?, :cancelled?]
         end
     end
 
     def total_price
         order_items.sum(&:price).to_f
+    end
+
+    def process_dispatch
+        # TODO delayed job sidekiq
+        if true
+            complete
+        else
+            cancel
+        end
     end
 
     private
