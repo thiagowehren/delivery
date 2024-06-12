@@ -14,7 +14,7 @@
   <div class="flex items-center mb-4">
     <div class="mr-4 logo">
       <% if store.image.present? %>
-        <%= image_tag store.thumbnail, class: "w-24 h-24 rounded-md" %>
+        <%= image_tag store.image_with_default, class: "w-24 h-24 rounded-md" %>
       <% else %>
         <%= image_tag "shop-default-256.png", class: "w-24 h-24 rounded-md" %>
       <% end %>

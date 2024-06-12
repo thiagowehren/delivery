@@ -4,7 +4,7 @@
       <div class="inline-flex items-center space-x-4">
         <div class="logo">
           <% if store.image.present? %>
-            <%= image_tag store.image, class: "w-24 h-24" %>
+            <%= image_tag store.image_with_default, class: "w-24 h-24" %>
           <% else %>
             <%= image_tag "shop-default-256.png", class: "w-24 h-24" %>
           <% end %>
