@@ -1,6 +1,8 @@
 require 'rails_helper'
 
 RSpec.describe "Products", type: :request do
+  include ActionView::Helpers::NumberHelper
+
   let(:seller) { FactoryBot.create(:seller_user, email: "seller@example.com") }
   let(:seller_not_owner) { FactoryBot.create(:seller_user, email: "seller2@example.com") }
   let(:buyer) { FactoryBot.create(:buyer_user, email: "buyer@example.com") }
@@ -81,7 +83,7 @@ RSpec.describe "Products", type: :request do
 
         expect(response).to have_http_status(:success)
         expect(json["title"]).to eq(valid_product_attributes[:title])
-        expect(json["price"].to_f).to eq(valid_product_attributes[:price])
+        expect(json["price"]).to eq(number_to_currency(valid_product_attributes[:price]))
       end
     end
 
@@ -104,7 +106,7 @@ RSpec.describe "Products", type: :request do
 
         expect(response).to have_http_status(:success)
         expect(json["title"]).to eq(valid_product_attributes[:title])
-        expect(json["price"].to_f).to eq(valid_product_attributes[:price])
+        expect(json["price"]).to eq(number_to_currency(valid_product_attributes[:price]))
       end
     end
 
