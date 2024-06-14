@@ -95,7 +95,7 @@ class OrdersController < ApplicationController
         end
 
         @orders = store.orders.order(created_at: :desc).includes(:order_items)
-        @orders = @orders.page(page)
+        @orders = @orders.page(page).limit(48)
 
         render 'orders/store_orders', status: :ok
     end
