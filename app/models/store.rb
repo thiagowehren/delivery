@@ -1,7 +1,7 @@
 class Store < ApplicationRecord
     acts_as_paranoid
-    searchkick
-    
+    searchkick word_start: [:name], text_middle: [:name]
+
     belongs_to :user
     before_validation :ensure_seller
     has_many :products, dependent: :destroy
@@ -32,4 +32,11 @@ class Store < ApplicationRecord
         self.user = nil if self.user && !self.user.seller?
     end
 
+    def search_data
+      {
+        name: name,
+        hidden: hidden,
+        user_id: user_id
+      }
+    end
 end

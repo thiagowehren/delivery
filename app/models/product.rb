@@ -1,9 +1,9 @@
 class Product < ApplicationRecord
   include Expirable
   acts_as_paranoid
-  searchkick
-
+  
   belongs_to :store
+  searchkick word_start: [:title], text_middle: [:title]
   before_save :set_hidden_if_priceless
   scope :visible, -> { where(hidden: false) }
   scope :not_expired, -> { where(expired: false) }
@@ -30,5 +30,15 @@ class Product < ApplicationRecord
   def set_hidden_if_priceless
     return if self.hidden == true
     self.hidden = !(price.present? && price > 0)
+  end
+
+  def search_data
+    {
+      title: title,
+      hidden: hidden,
+      expired: expired,
+      store_hidden: store.hidden,
+      store_user_id: store.user_id
+    }
   end
 end
