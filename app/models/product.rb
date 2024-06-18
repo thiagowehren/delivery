@@ -1,6 +1,7 @@
 class Product < ApplicationRecord
   include Expirable
   acts_as_paranoid
+  searchkick
 
   belongs_to :store
   before_save :set_hidden_if_priceless

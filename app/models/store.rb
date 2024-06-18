@@ -1,6 +1,7 @@
 class Store < ApplicationRecord
     acts_as_paranoid
-
+    searchkick
+    
     belongs_to :user
     before_validation :ensure_seller
     has_many :products, dependent: :destroy
