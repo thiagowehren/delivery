@@ -13,7 +13,7 @@ ENV RAILS_ENV="development" \
 
 # Install packages needed to build gems
 RUN apt-get update -qq && \
-    apt-get install --no-install-recommends -y build-essential git libvips pkg-config imagemagick libsqlite3-0
+    apt-get install --no-install-recommends -y build-essential git libvips pkg-config imagemagick libsqlite3-0 iputils-ping dnsutils
 
 # Install application gems
 COPY Gemfile Gemfile.lock ./
