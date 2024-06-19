@@ -1,5 +1,7 @@
 json.extract! product, :id, :title, :expires_at
 json.price number_to_currency(product.price)
+json.store_url store_url(product.store.id)
+json.store_id product.store.id
 
 if current_user.seller?
   json.hidden product.hidden
