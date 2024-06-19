@@ -78,3 +78,5 @@ gem "tailwindcss-rails", "~> 2.6"
 gem "kaminari", "~> 1.2"
 gem "searchkick"
 gem "elasticsearch", "~> 7.17.8"
+gem 'elasticsearch-model'
+gem 'elasticsearch-rails'
