@@ -80,3 +80,4 @@ gem "searchkick"
 gem "elasticsearch", "~> 7.17.8"
 gem 'elasticsearch-model'
 gem 'elasticsearch-rails'
+gem "groupdate", "~> 6.4"

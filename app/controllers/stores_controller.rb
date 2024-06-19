@@ -1,7 +1,7 @@
 class StoresController < ApplicationController
   skip_forgery_protection only: %i[create update destroy]
   before_action :authenticate!
-  before_action :set_store, only: %i[ show edit update destroy new_order]
+  before_action :set_store, only: %i[ show edit update destroy new_order store_daily_revenue]
   before_action :redirect_if_not_admin_or_owner, only: [:edit, :update, :destroy]
   before_action :redirect_if_not_store_owner, only: [:show]
 
@@ -100,6 +100,20 @@ class StoresController < ApplicationController
       format.html { redirect_to stores_url, notice: "Store was successfully destroyed." }
       format.json { head :no_content }
     end
+  end
+
+  def store_daily_revenue
+    unless current_user.admin? || current_user == @store.user
+      render json: { error: "Unauthorized" }, status: :unauthorized
+      return
+    end
+
+    revenue = Order.joins(:order_items)
+                .where('orders.created_at >= ? AND orders.store_id = ?', 30.days.ago, @store.id)
+                .group_by_day('orders.created_at')
+                .sum('order_items.price * order_items.amount')
+
+    render json: revenue
   end
 
   private

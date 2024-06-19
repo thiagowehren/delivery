@@ -33,4 +33,6 @@ Rails.application.routes.draw do
   get '/products/:id', to: 'products#redirect_to_store_product'
 
   post "search", to: "search#index"
+
+  get 'dashboard/:id', to: 'stores#store_daily_revenue'
 end
