@@ -113,7 +113,7 @@ class StoresController < ApplicationController
                 .group_by_day('orders.created_at')
                 .sum('order_items.price * order_items.amount')
 
-    render json: revenue
+    render json: {data: revenue }
   end
 
   private
