@@ -81,3 +81,7 @@ gem "elasticsearch", "~> 7.17.8"
 gem 'elasticsearch-model'
 gem 'elasticsearch-rails'
 gem "groupdate", "~> 6.4"
+
+gem "faraday", "~> 2.9"
+
+gem "sidekiq", "~> 7.2"
